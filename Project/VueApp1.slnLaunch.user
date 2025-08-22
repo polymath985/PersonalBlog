@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "新建配置文件",
+    "Projects": [
+      {
+        "Path": "VueApp1.Server\\VueApp1.Server.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "vueapp1.client\\vueapp1.client.esproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
