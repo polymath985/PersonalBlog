@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jqYNecR5PAk=",
+  "dgSpecHash": "4wLMbhkht1Q=",
   "success": true,
-  "projectFilePath": "D:\\Code\\Web\\VueApp1\\VueApp1.Server\\VueApp1.Server.csproj",
+  "projectFilePath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\VueApp1.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.6\\microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",
     "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\9.0.8\\microsoft.aspnetcore.spaproxy.9.0.8.nupkg.sha512",

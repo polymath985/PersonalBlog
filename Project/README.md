@@ -26,6 +26,8 @@ VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 
 
 ### 启动应用
 
+按在vscode中ctrl+shift+B快速启动应用
+
 #### 1. 启动后端服务
 ```bash
 cd VueApp1.Server

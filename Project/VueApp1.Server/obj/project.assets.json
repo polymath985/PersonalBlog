@@ -112,11 +112,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\Web\\VueApp1\\VueApp1.Server\\VueApp1.Server.csproj",
+      "projectUniqueName": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\VueApp1.Server.csproj",
       "projectName": "VueApp1.Server",
-      "projectPath": "D:\\Code\\Web\\VueApp1\\VueApp1.Server\\VueApp1.Server.csproj",
+      "projectPath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\VueApp1.Server.csproj",
       "packagesPath": "C:\\Users\\lvpf\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\Web\\VueApp1\\VueApp1.Server\\obj\\",
+      "outputPath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\IDE\\Visual Studio\\Tools\\NuGetPackages"

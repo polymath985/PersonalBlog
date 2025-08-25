@@ -1,1 +1,2 @@
 D:\Code\Web\VueApp1\vueapp1.client\obj\Debug\vueapp1.client.esproj.CoreCompileInputs.cache
+D:\Code\GitHub\Vue-ASP.NETCore\Project\vueapp1.client\obj\Debug\vueapp1.client.esproj.CoreCompileInputs.cache
