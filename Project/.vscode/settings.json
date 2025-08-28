@@ -1,2 +1,51 @@
 {
+  // 配置默认浏览器（可选：chrome, firefox, edge, safari）
+  "liveServer.settings.CustomBrowser": "chrome",
+  
+  // HTML文件右键"在浏览器中打开"的默认浏览器
+  "open-in-browser.default": "chrome",
+  
+  // 配置多个浏览器选项
+  "open-in-browser.browsers": [
+    {
+      "name": "chrome",
+      "path": "chrome"
+    },
+    {
+      "name": "firefox", 
+      "path": "firefox"
+    },
+    {
+      "name": "edge",
+      "path": "msedge"
+    }
+  ],
+  
+  // Live Server 配置
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.host": "localhost",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.root": "/",
+  "liveServer.settings.file": "index.html",
+  
+  // HTML文件预览设置
+  "html.suggest.html5": true,
+  "html.format.enable": true,
+  "html.format.wrapLineLength": 120,
+  
+  // Emmet配置
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "javascript": "javascriptreact"
+  },
+  
+  // Vue开发配置
+  "vetur.experimental.templateInterpolationService": true,
+  
+  // 文件关联
+  "files.associations": {
+    "*.vue": "vue",
+    "*.html": "html"
+  }
 }

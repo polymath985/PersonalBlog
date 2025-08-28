@@ -58,6 +58,7 @@
         data(): Data {
             return {
                 loading: false,
+
                 post: null
             };
         },
