@@ -73,3 +73,12 @@ D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\obj\Debug\net9.0\refint\Vu
 D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\obj\Debug\net9.0\VueApp1.Server.pdb
 D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\obj\Debug\net9.0\VueApp1.Server.genruntimeconfig.cache
 D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\obj\Debug\net9.0\ref\VueApp1.Server.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\System.Data.SQLite.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\linux-x64\native\libsqlite3.so
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\osx-x64\native\libsqlite3.dylib
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\win7-x64\native\sqlite3.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\win7-x86\native\sqlite3.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\linux-x64\native\SQLite.Interop.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\osx-x64\native\SQLite.Interop.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\win-x64\native\SQLite.Interop.dll
+D:\Code\GitHub\Vue-ASP.NETCore\Project\VueApp1.Server\bin\Debug\net9.0\runtimes\win-x86\native\SQLite.Interop.dll

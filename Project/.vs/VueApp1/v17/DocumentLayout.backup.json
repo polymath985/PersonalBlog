@@ -1,17 +1,33 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Code\\Web\\VueApp1\\",
+  "WorkspaceRootPath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\web\\vueapp1\\vueapp1.client\\vite.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "AbsoluteMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.server\\database\\sqlitehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|solutionrelative:vueapp1.server\\database\\sqlitehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|solutionrelative:vueapp1.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.server\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|solutionrelative:vueapp1.server\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.server\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCB7AAF-B4AF-441B-B3B9-4A0F5DB56F02}|VueApp1.Server\\VueApp1.Server.csproj|solutionrelative:vueapp1.server\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.client\\vite.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
       "RelativeMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|solutionrelative:vueapp1.client\\vite.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\web\\vueapp1\\vueapp1.client\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.client\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
       "RelativeMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|solutionrelative:vueapp1.client\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\web\\vueapp1\\vueapp1.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|d:\\code\\github\\vue-asp.netcore\\project\\vueapp1.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{77D41B84-BDD9-C8D4-CBAF-73419802FDA2}|vueapp1.client\\vueapp1.client.esproj|solutionrelative:vueapp1.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
@@ -22,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,11 +62,63 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\Program.cs",
+              "RelativeDocumentMoniker": "VueApp1.Server\\Program.cs",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\Program.cs",
+              "RelativeToolTip": "VueApp1.Server\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-28T13:45:27.225Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\UserData.cs",
+              "RelativeDocumentMoniker": "VueApp1.Server\\UserData.cs",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\UserData.cs",
+              "RelativeToolTip": "VueApp1.Server\\UserData.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-28T13:45:22.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "SQLiteHelper.cs",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\DataBase\\SQLiteHelper.cs",
+              "RelativeDocumentMoniker": "VueApp1.Server\\DataBase\\SQLiteHelper.cs",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\DataBase\\SQLiteHelper.cs",
+              "RelativeToolTip": "VueApp1.Server\\DataBase\\SQLiteHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-28T13:14:58.968Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "VueApp1.Server\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "VueApp1.Server\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-19T09:33:05.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "vite.config.ts",
-              "DocumentMoniker": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\vite.config.ts",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\vite.config.ts",
               "RelativeDocumentMoniker": "vueapp1.client\\vite.config.ts",
-              "ToolTip": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\vite.config.ts",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\vite.config.ts",
               "RelativeToolTip": "vueapp1.client\\vite.config.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
@@ -59,11 +127,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "README.md",
-              "DocumentMoniker": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\README.md",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\README.md",
               "RelativeDocumentMoniker": "vueapp1.client\\README.md",
-              "ToolTip": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\README.md",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\README.md",
               "RelativeToolTip": "vueapp1.client\\README.md",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
@@ -72,11 +140,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "index.html",
-              "DocumentMoniker": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\index.html",
+              "DocumentMoniker": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\index.html",
               "RelativeDocumentMoniker": "vueapp1.client\\index.html",
-              "ToolTip": "D:\\Code\\Web\\VueApp1\\vueapp1.client\\index.html",
+              "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\vueapp1.client\\index.html",
               "RelativeToolTip": "vueapp1.client\\index.html",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",

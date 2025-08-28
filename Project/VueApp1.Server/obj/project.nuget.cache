@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "4wLMbhkht1Q=",
+  "dgSpecHash": "CjY2q0m7O+c=",
   "success": true,
   "projectFilePath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\VueApp1.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.6\\microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",
     "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\9.0.8\\microsoft.aspnetcore.spaproxy.9.0.8.nupkg.sha512",
-    "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+    "C:\\Users\\lvpf\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\lvpf\\.nuget\\packages\\sqlite\\3.13.0\\sqlite.3.13.0.nupkg.sha512",
+    "C:\\Users\\lvpf\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\lvpf\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512"
   ],
   "logs": []
 }

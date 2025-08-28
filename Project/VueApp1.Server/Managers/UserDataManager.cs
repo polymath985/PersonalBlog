@@ -25,7 +25,7 @@ namespace VueApp1.Server.Managers
 
         public UserData GetUserDataById(int id)
         {
-            return _userDataList.FirstOrDefault(u => u.Id == id) ?? new UserData(0, "Unknown", "unknown@example.com");
+            return _userDataList.FirstOrDefault(u => u.Id == id) ?? new UserData(0, "Unknown", "unknown", "unknown@example.com", DateTime.Now);
         }
 
         public IEnumerable<UserData> GetAllUsers()

@@ -28,11 +28,11 @@ namespace VueApp1.Server.Controllers
             }
             
             // 添加示例用户数据
-            manager.AddUserData(new UserData(1, "张三", "zhangsan@example.com"));
-            manager.AddUserData(new UserData(2, "李四", "lisi@example.com"));
-            manager.AddUserData(new UserData(3, "王五", "wangwu@example.com"));
-            manager.AddUserData(new UserData(4, "赵六", "zhaoliu@example.com"));
-            manager.AddUserData(new UserData(5, "孙七", "sunqi@example.com"));
+            manager.AddUserData(new UserData(1, "张三", "zhangsan", "zhangsan@example.com", DateTime.Now));
+            manager.AddUserData(new UserData(2, "李四", "lisi", "lisi@example.com", DateTime.Now));
+            manager.AddUserData(new UserData(3, "王五", "wangwu", "wangwu@example.com", DateTime.Now));
+            manager.AddUserData(new UserData(4, "赵六", "zhaoliu", "zhaoliu@example.com", DateTime.Now));
+            manager.AddUserData(new UserData(5, "孙七", "sunqi", "sunqi@example.com", DateTime.Now));
         }
 
         [HttpGet(Name = "GetAllUsers")]

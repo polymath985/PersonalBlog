@@ -57,6 +57,14 @@
             "Microsoft.AspNetCore.SpaProxy": {
               "target": "Package",
               "version": "[9.*-*, )"
+            },
+            "SQLite": {
+              "target": "Package",
+              "version": "[3.13.0, )"
+            },
+            "System.Data.SQLite.Core": {
+              "target": "Package",
+              "version": "[1.0.119, )"
             }
           },
           "imports": [
