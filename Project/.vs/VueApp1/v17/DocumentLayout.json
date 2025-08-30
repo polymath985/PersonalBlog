@@ -76,7 +76,7 @@
               "RelativeDocumentMoniker": "VueApp1.Server\\DataBase\\UserDataExample.cs",
               "ToolTip": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\VueApp1.Server\\DataBase\\UserDataExample.cs",
               "RelativeToolTip": "VueApp1.Server\\DataBase\\UserDataExample.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAuwAUAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-28T13:57:37.68Z",
               "EditorCaption": ""
@@ -91,8 +91,7 @@
               "RelativeToolTip": "VueApp1.Server\\DataBase\\DataBaseOperator.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-28T13:57:21.587Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-28T13:57:21.587Z"
             },
             {
               "$type": "Document",
@@ -104,8 +103,7 @@
               "RelativeToolTip": "VueApp1.Server\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-28T13:45:27.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-28T13:45:27.225Z"
             },
             {
               "$type": "Document",
@@ -117,8 +115,7 @@
               "RelativeToolTip": "VueApp1.Server\\UserData.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-28T13:45:22.763Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-28T13:45:22.763Z"
             },
             {
               "$type": "Document",
@@ -130,8 +127,7 @@
               "RelativeToolTip": "VueApp1.Server\\DataBase\\SQLiteHelper.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAQwAMAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-28T13:14:58.968Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-28T13:14:58.968Z"
             },
             {
               "$type": "Document",
@@ -143,8 +139,7 @@
               "RelativeToolTip": "VueApp1.Server\\Controllers\\WeatherForecastController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T09:33:05.169Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T09:33:05.169Z"
             },
             {
               "$type": "Document",
@@ -156,8 +151,7 @@
               "RelativeToolTip": "vueapp1.client\\vite.config.ts",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2025-08-19T09:01:37.803Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T09:01:37.803Z"
             },
             {
               "$type": "Document",
@@ -169,8 +163,7 @@
               "RelativeToolTip": "vueapp1.client\\README.md",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-08-19T09:01:36.31Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T09:01:36.31Z"
             },
             {
               "$type": "Document",
@@ -182,8 +175,7 @@
               "RelativeToolTip": "vueapp1.client\\index.html",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-08-19T09:01:34.572Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T09:01:34.572Z"
             }
           ]
         }

@@ -18,7 +18,7 @@ namespace VueApp1.Server
                 // 运行错误情况测试
                 UserDataExample.TestErrorCases();
                 
-                Console.WriteLine("测试完成，按任意键退出...");
+                Console.WriteLine("测试完成，按任意键退出...laoguan985");
                 Console.ReadKey();
                 return;
             }

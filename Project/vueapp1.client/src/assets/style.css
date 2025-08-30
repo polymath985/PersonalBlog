@@ -9,7 +9,7 @@ html, body {
     width: 100%;
 }
 
-body {
+/* body {
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(to right, #c9d6ff, #e2e2e2);
     display: flex;
@@ -17,7 +17,7 @@ body {
     justify-content: center;
     flex-direction: column;
     height: 100vh;
-}
+} */
 
 .container{
     background-color:#fff;
