@@ -2,7 +2,7 @@
 
 ## 🚀 项目简介
 
-VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。
+VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。laoguan985
 
 ## 🏗️ 技术栈
 
