@@ -46,6 +46,22 @@
   // 文件关联
   "files.associations": {
     "*.vue": "vue",
-    "*.html": "html"
-  }
+    "*.html": "html",
+    "tsconfig*.json": "jsonc"
+  },
+  
+  // TypeScript设置
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  
+  // 禁用某些TypeScript诊断警告
+  "typescript.reportStyleChecksAsWarnings": false,
+  "typescript.validate.enable": true,
+  
+  // 禁用TypeScript编译器选项建议
+  "typescript.surveys.enabled": false,
+  "typescript.suggest.completeFunctionCalls": false,
+  
+  // 设置诊断过滤
+  "typescript.preferences.quoteStyle": "auto"
 }
