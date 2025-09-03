@@ -1,5 +1,5 @@
-﻿using System.Data.SQLite;
-using Backend;
+﻿using Backend.Models;
+using System.Data.SQLite;
 
 namespace Backend.DataBase
 {

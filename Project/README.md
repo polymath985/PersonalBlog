@@ -2,7 +2,7 @@
 
 ## 🚀 项目简介
 
-VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。laoguan985
+VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。
 
 ## 🏗️ 技术栈
 
@@ -10,7 +10,6 @@ VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 
 - **[Vue 3](https://vuejs.org/)** - 渐进式 JavaScript 框架
 - **[TypeScript](https://www.typescriptlang.org/)** - 带类型的 JavaScript 超集
 - **[Vite](https://vitejs.dev/)** - 现代前端构建工具
-- **[ESLint](https://eslint.org/)** - 代码质量检查工具
 
 ### 后端技术栈
 - **[ASP.NET Core](https://docs.microsoft.com/aspnet/core/)** - 跨平台 Web 框架
@@ -27,25 +26,6 @@ VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 
 ### 启动应用
 
 按在vscode中ctrl+shift+B快速启动应用
-
-#### 1. 启动后端服务
-```bash
-cd VueApp1.Server
-dotnet run
-```
-后端服务将运行在: `http://localhost:5297`
-
-#### 2. 启动前端服务  
-```bash
-cd vueapp1.client
-npm install
-npm run dev
-```
-前端应用将运行在: `https://localhost:5157`
-
-### 访问应用
-- 🌐 **前端应用**: https://localhost:5157/
-- 🔌 **后端API**: http://localhost:5297/weatherforecast
 
 ## 📚 完整文档
 
@@ -74,7 +54,6 @@ npm run dev
 - **极速热重载**: Vite + dotnet watch 毫秒级更新
 - **类型安全**: 前后端全 TypeScript/C# 类型覆盖
 - **智能提示**: 完整的代码补全和错误检查
-- **统一代码风格**: ESLint + EditorConfig 规范
 
 ### 🏗️ 架构最佳实践
 - **前后端分离**: 清晰的职责分工和接口定义
@@ -91,9 +70,9 @@ npm run dev
 ## 📊 项目结构
 
 ```
-VueApp1/
+Project/
 ├── 📁 docs/                    # 📚 项目文档
-├── 📁 VueApp1.Server/          # ⚙️ ASP.NET Core 后端
+├── 📁 Backend/          # ⚙️ ASP.NET Core 后端
 │   ├── Controllers/            #   API 控制器
 │   ├── Models/                 #   数据模型  
 │   └── Program.cs              #   应用启动

@@ -1,4 +1,4 @@
-using Backend;
+using Backend.Models;
 
 namespace Backend.DataBase
 {
@@ -33,10 +33,10 @@ namespace Backend.DataBase
 
             // 3. 读取用户 (Read)
             Console.WriteLine("3. 读取用户信息...");
-            
+
             // 按ID查询
             DataBaseOperator.PrintUserById(userId1);
-            
+
             // 按账号查询
             var userByAccount = DataBaseOperator.GetUserByAccount("lisi");
             if (userByAccount != null)
@@ -91,7 +91,7 @@ namespace Backend.DataBase
             Console.WriteLine("8. 删除用户...");
             bool deleteResult = DataBaseOperator.DeleteUser(userId3);
             Console.WriteLine($"删除用户结果: {deleteResult}");
-            
+
             Console.WriteLine("删除后的用户列表:");
             DataBaseOperator.PrintAllUsers();
             Console.WriteLine();

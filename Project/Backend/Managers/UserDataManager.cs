@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Backend.DataBase;
 using Backend.Controllers;
+using Backend.Models;
 
 namespace Backend.Managers
 {
@@ -10,7 +10,7 @@ namespace Backend.Managers
 
         public static UserDataManager Instance => _instanceHolder.Value;
 
-        private UserDataManager() 
+        private UserDataManager()
         {
             // 初始化数据库表
             DataBaseOperator.InitializeUserDataTable();
@@ -44,7 +44,7 @@ namespace Backend.Managers
 
         public bool ValidateUser(SignInRequest request)
         {
-        
+
             if (DataBaseOperator.ValidateUserCredentials(request.Email, request.Password))
             {
                 return true;
@@ -75,7 +75,7 @@ namespace Backend.Managers
                 return null;
             }
         }
-        
+
         public UserData? GetUserDataByEmail(string email)
         {
             try

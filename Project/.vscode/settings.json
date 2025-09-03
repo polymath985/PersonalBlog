@@ -78,7 +78,10 @@
     "**/obj": true,
     "**/*.csproj.user": true,
     "**/*.esproj.user": true,
-    
+    "**/*.editorconfig": true,
+    "**/*.user": true,
+    "**/Properties": true,
+
     // Node.js 相关文件
     "**/node_modules": true,
     "**/.pnp": true,
@@ -95,6 +98,10 @@
     
     // 依赖管理文件
     "**/package-lock.json": true,
-    "**/yarn.lock": true
+    "**/yarn.lock": true,
+
+    //git相关文件
+    "**/.gitignore": true,
+    "**/.gitattributes": true
   }
 }
