@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Server.Data.DataBase;
+using Backend.DataBase;
 using Backend.Controllers;
 
 namespace Backend.Managers

@@ -1,8 +1,7 @@
-﻿using Server.Helper;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using Backend;
 
-namespace Server.Data.DataBase
+namespace Backend.DataBase
 {
     public static class DataBaseOperator
     {

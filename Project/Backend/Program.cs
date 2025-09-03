@@ -1,6 +1,5 @@
 using Backend.Managers;
-using Backend.Examples;
-using Server.Data.DataBase;
+using Backend.DataBase;
 
 namespace Backend
 {

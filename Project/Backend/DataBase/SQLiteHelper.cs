@@ -5,7 +5,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 
-namespace Server.Helper
+namespace Backend.DataBase
 {
     public static class SQLiteHelper
     {
@@ -13,7 +13,7 @@ namespace Server.Helper
         /// ConnectionString样例：Data Source=Test.db3;Pooling=true;FailIfMissing=false
         /// </summary>
         //public static string ConnectionString = "Data Source=C:\\Users\\lvpf\\Desktop\\Server\\Data\\DataBase\\data.db;Pooling=true;FailIfMissing=false";
-        public static string ConnectionString = "Data Source=D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\Backend\\DataBase\\UserData.db";
+        public static string ConnectionString = "Data Source=DataBase/UserData.db";
         /// <summary>
         /// 参数设置
         /// </summary>

@@ -1,7 +1,6 @@
-using Server.Data.DataBase;
 using Backend;
 
-namespace Backend.Examples
+namespace Backend.DataBase
 {
     /// <summary>
     /// UserData CRUD操作使用示例
