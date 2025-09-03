@@ -4,7 +4,7 @@
 		{
 			"label": "启动后端服务",
 			"type": "shell",
-			"command": "dotnet run --project VueApp1.Server",
+			"command": "dotnet run --project Backend/Backend.csproj",
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build",
@@ -25,7 +25,7 @@
 			"type": "shell",
 			"command": "npm run dev",
 			"options": {
-				"cwd": "${workspaceFolder}/vueapp1.client"
+				"cwd": "${workspaceFolder}/Frontend"
 			},
 			"isBackground": true,
 			"problemMatcher": [],
