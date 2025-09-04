@@ -231,11 +231,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\Backend\\Backend.csproj",
+      "projectUniqueName": "D:\\Code\\GitHub\\PersonalBlog\\Project\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\Backend\\Backend.csproj",
+      "projectPath": "D:\\Code\\GitHub\\PersonalBlog\\Project\\Backend\\Backend.csproj",
       "packagesPath": "C:\\Users\\lvpf\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\Backend\\obj\\",
+      "outputPath": "D:\\Code\\GitHub\\PersonalBlog\\Project\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\IDE\\Visual Studio\\Tools\\NuGetPackages"

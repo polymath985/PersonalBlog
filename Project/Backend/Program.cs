@@ -7,9 +7,6 @@ namespace Backend
     {
         public static void Main(string[] args)
         {
-            //启动时删除数据库所有表格并创建新表
-            DataBaseOperator.InitializeUserDataTable();
-
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

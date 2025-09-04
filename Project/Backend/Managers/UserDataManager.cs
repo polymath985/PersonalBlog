@@ -12,8 +12,6 @@ namespace Backend.Managers
 
         private UserDataManager()
         {
-            // 初始化数据库表
-            DataBaseOperator.InitializeUserDataTable();
         }
 
         ///<summary>

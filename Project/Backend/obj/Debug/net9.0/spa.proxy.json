@@ -3,7 +3,7 @@
 "ServerUrl": "https://localhost:5156",
 "RedirectUrl": "",
 "LaunchCommand": "npm run dev",
-"WorkingDirectory": "D:\\Code\\GitHub\\Vue-ASP.NETCore\\Project\\Backend\\..\\Frontend",
+"WorkingDirectory": "D:\\Code\\GitHub\\PersonalBlog\\Project\\Backend\\..\\Frontend",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }

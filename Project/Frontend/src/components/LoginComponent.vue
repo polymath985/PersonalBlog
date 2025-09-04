@@ -288,9 +288,13 @@ const showMessage = (text: string, type: 'success' | 'error') => {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100vw;
+  height: 100vh;
   min-height: 100vh;
   background: linear-gradient(to right, #c9d6ff, #e2e2e2);
   font-family: Arial, Helvetica, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .container {
@@ -300,8 +304,9 @@ const showMessage = (text: string, type: 'success' | 'error') => {
   position: relative;
   overflow: hidden;
   width: 768px;
-  max-width: 100%;
+  max-width: calc(100vw - 40px);
   min-height: 480px;
+  max-height: calc(100vh - 40px);
 }
 
 .container p {
@@ -544,9 +549,16 @@ const showMessage = (text: string, type: 'success' | 'error') => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .login-container {
+    padding: 10px;
+  }
+
   .container {
-    width: 95%;
-    min-height: 600px;
+    width: calc(100vw - 20px);
+    max-width: none;
+    min-height: calc(100vh - 20px);
+    max-height: calc(100vh - 20px);
+    border-radius: 20px;
   }
 
   .form-container {
