@@ -89,8 +89,6 @@ cd Frontend && npm run dev
 
 本项目提供了详细的技术文档，帮助你深入理解现代 Web 开发：
 
-### 📖 [查看完整文档](./docs/)
-
 文档结构：
 ```
 📁 docs/
@@ -99,12 +97,6 @@ cd Frontend && npm run dev
 ├── 🎨 frontend/         # 前端开发文档
 └── 📝 guides/           # 开发指南和教程
 ```
-
-### 🎯 推荐阅读顺序
-1. **[项目架构](./docs/architecture/)** - 了解整体设计思路
-2. **[语法指南](./docs/guides/)** - 学习 C# 和 TypeScript 语法
-3. **[前端开发](./docs/frontend/)** - Vue.js 项目结构和 API 调用
-4. **[后端开发](./docs/backend/)** - ASP.NET Core Web API 开发
 
 ## ✨ 项目特色
 
@@ -146,6 +138,3 @@ Project/
 
 **Happy Coding! 🎉**
 
-> 这个项目旨在展示现代 Web 开发的最佳实践，希望能够帮助开发者学习和掌握全栈开发技能。
-
-📚 **[开始学习 →](./docs/)**
