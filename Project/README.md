@@ -1,8 +1,8 @@
-# VueApp1 - 现代全栈 Web 应用
+# PersonalBlog
 
 ## 🚀 项目简介
 
-VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。
+该个人博客是一个展示现代 Web 开发技术栈的全栈应用项目，采用 **Vue 3 + TypeScript** 前端和 **ASP.NET Core** 后端架构，演示了前后端分离开发的最佳实践。
 
 ## 🏗️ 技术栈
 
@@ -23,9 +23,67 @@ VueApp1 是一个展示现代 Web 开发技术栈的全栈应用项目，采用 
 - **.NET**: >= 9.0
 - **IDE**: Visual Studio Code (推荐)
 
+### 📦 依赖安装
+
+#### 前端依赖安装
+```powershell
+# 进入前端目录
+cd Frontend
+
+# 安装前端依赖（Vue、Vite、TypeScript等）
+npm install
+```
+
+#### 后端依赖安装
+```powershell
+# 进入后端目录
+cd Backend
+
+# 恢复.NET包依赖
+dotnet restore
+```
+
+**后端包依赖列表**：
+- `Microsoft.AspNetCore.OpenApi` (9.0.6) - OpenAPI文档支持
+- `Microsoft.AspNetCore.SpaProxy` (9.0.8) - SPA代理服务
+- `SQLite` (3.13.0) - SQLite数据库
+- `System.Data.SQLite.Core` (1.0.119) - SQLite核心库
+
+> 💡 **提示**: .NET项目的依赖会在首次运行时自动恢复，但建议手动执行 `dotnet restore` 确保依赖完整。
+
+
+### 🚀 完整设置流程
+
+```powershell
+# 1. 克隆项目(未克隆时)
+git clone <[repository-url](https://github.com/polymath985/PersonalBlog.git)>
+cd PersonalBlog/Project
+
+# 2. 安装前端依赖
+cd Frontend
+npm install
+
+# 3. 恢复后端依赖
+cd ../Backend
+dotnet restore
+
+# 4. 返回根目录
+cd ..
+
+# 5. 启动项目（方式1：VS Code任务）
+# 在VS Code中按 Ctrl+Shift+P，选择 "Tasks: Run Task" → "🚀 启动全栈应用"
+
+# 6. 启动项目（方式2：手动启动）
+# 终端1 - 启动后端
+dotnet run --project Backend/Backend.csproj
+
+# 终端2 - 启动前端
+cd Frontend && npm run dev
+```
+
 ### 启动应用
 
-按在vscode中ctrl+shift+B快速启动应用
+安装依赖后，在VS Code中按 `Ctrl+Shift+B` 快速启动前后端应用
 
 ## 📚 完整文档
 
@@ -85,66 +143,6 @@ Project/
 │   └── vite.config.ts          #   构建配置
 └── VueApp1.sln                 # Visual Studio 解决方案
 ```
-
-## 🎯 核心功能演示
-
-### 天气预报数据展示
-- **后端**: 生成随机天气数据的 RESTful API
-- **前端**: 响应式表格展示和数据更新
-- **集成**: 完整的前后端数据流演示
-
-### 技术栈集成
-- **开发环境**: 热重载 + 代理服务器
-- **类型系统**: C# 模型自动映射到 TypeScript 接口  
-- **构建工具**: Vite (前端) + .NET CLI (后端)
-- **代码质量**: ESLint + TypeScript 编译检查
-
-## 🚀 扩展方向
-
-### 即将支持的功能
-- 🔐 **用户认证系统** - JWT + Identity
-- 🗄️ **数据库集成** - Entity Framework Core
-- 🎨 **UI 组件库** - Element Plus / Ant Design Vue
-- 📱 **响应式设计** - 移动端适配
-- 🔄 **状态管理** - Pinia 全局状态
-- 🧪 **自动化测试** - 单元测试 + E2E 测试
-
-### 架构演进计划  
-1. **当前阶段**: 简单的前后端分离
-2. **第二阶段**: 添加数据库和认证系统
-3. **第三阶段**: 微服务架构改造
-4. **第四阶段**: 云原生部署和监控
-
-## 🤝 贡献指南
-
-欢迎提交 Issue 和 Pull Request！
-
-### 参与方式
-- 🐛 **Bug 报告**: 发现问题请提交 Issue
-- 💡 **功能建议**: 欢迎提出新功能想法
-- 📖 **文档改进**: 帮助完善项目文档
-- 💻 **代码贡献**: 提交代码改进和新功能
-
-### 开发规范
-- 遵循项目的代码风格和命名约定
-- 添加适当的注释和文档
-- 确保代码质量和测试覆盖率
-- 提交前运行代码检查和格式化
-
-## 📄 许可证
-
-本项目采用 [MIT License](./LICENSE) 开源协议。
-
-## 🙏 致谢
-
-感谢以下开源项目和社区：
-- [Vue.js](https://vuejs.org/) 团队
-- [ASP.NET Core](https://docs.microsoft.com/aspnet/core/) 团队
-- [TypeScript](https://www.typescriptlang.org/) 团队  
-- [Vite](https://vitejs.dev/) 团队
-- 所有贡献者和使用者
-
----
 
 **Happy Coding! 🎉**
 

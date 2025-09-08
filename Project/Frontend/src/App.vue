@@ -7,6 +7,7 @@
 
 <script setup lang="ts">
 // 移除所有页面切换逻辑，现在由路由管理
+import TopNavigation from './components/TopNavigation.vue'
 </script>
 
 <style scoped>
