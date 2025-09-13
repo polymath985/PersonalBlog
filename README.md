@@ -133,7 +133,7 @@ Project/
 │   │   └── main.ts             #     应用入口
 │   ├── package.json            #   依赖配置
 │   └── vite.config.ts          #   构建配置
-└── Personal.sln                 # Visual Studio 解决方案
+└── PersonalBlog.sln                 # Visual Studio 解决方案
 ```
 
 **Happy Coding! 🎉**
