@@ -126,14 +126,14 @@ Project/
 │   ├── Controllers/            #   API 控制器
 │   ├── Models/                 #   数据模型  
 │   └── Program.cs              #   应用启动
-├── 📁 vueapp1.client/          # 🎨 Vue.js 前端
+├── 📁 Frontend/          # 🎨 Vue.js 前端
 │   ├── src/                    #   源代码
 │   │   ├── components/         #     Vue 组件
 │   │   ├── assets/             #     静态资源
 │   │   └── main.ts             #     应用入口
 │   ├── package.json            #   依赖配置
 │   └── vite.config.ts          #   构建配置
-└── VueApp1.sln                 # Visual Studio 解决方案
+└── Personal.sln                 # Visual Studio 解决方案
 ```
 
 **Happy Coding! 🎉**
