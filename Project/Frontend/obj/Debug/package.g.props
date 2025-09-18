@@ -12,6 +12,7 @@
     <PackageJsonScriptsBuildOnly Condition="$(PackageJsonScriptsBuildOnly) == ''">vite build</PackageJsonScriptsBuildOnly>
     <PackageJsonScriptsTypeCheck Condition="$(PackageJsonScriptsTypeCheck) == ''">vue-tsc --build</PackageJsonScriptsTypeCheck>
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint . --fix</PackageJsonScriptsLint>
+    <PackageJsonDependenciesPinia Condition="$(PackageJsonDependenciesPinia) == ''">^3.0.3</PackageJsonDependenciesPinia>
     <PackageJsonDependenciesVue Condition="$(PackageJsonDependenciesVue) == ''">^3.5.18</PackageJsonDependenciesVue>
     <PackageJsonDependenciesVueRouter Condition="$(PackageJsonDependenciesVueRouter) == ''">^4.5.1</PackageJsonDependenciesVueRouter>
     <PackageJsonDevdependenciesTsconfigNode22 Condition="$(PackageJsonDevdependenciesTsconfigNode22) == ''">^22.0.2</PackageJsonDevdependenciesTsconfigNode22>

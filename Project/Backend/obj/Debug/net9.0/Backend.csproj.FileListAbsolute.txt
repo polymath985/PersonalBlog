@@ -88,3 +88,4 @@ D:\Code\GitHub\PersonalBlog\Project\Backend\obj\Debug\net9.0\refint\Backend.dll
 D:\Code\GitHub\PersonalBlog\Project\Backend\obj\Debug\net9.0\Backend.pdb
 D:\Code\GitHub\PersonalBlog\Project\Backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
 D:\Code\GitHub\PersonalBlog\Project\Backend\obj\Debug\net9.0\ref\Backend.dll
+D:\Code\GitHub\PersonalBlog\Project\Backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json

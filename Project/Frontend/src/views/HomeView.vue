@@ -1,15 +1,5 @@
 <template>
   <div class="home-view">
-    <!-- 顶部导航栏 -->
-    <nav class="top-nav">
-      <div class="nav-content">
-        <h2>欢迎，{{ userEmail }}</h2>
-        <button class="logout-button" @click="handleLogout">
-          退出登录
-        </button>
-      </div>
-    </nav>
-
     <!-- 主要内容区域 -->
     <main class="main-content">
       <header class="welcome-header">
@@ -27,28 +17,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import HelloWorld from '@/components/HelloWorld.vue'
 import TheWelcome from '@/components/TheWelcome.vue'
 
-const router = useRouter()
-const userEmail = ref('')
-
-onMounted(() => {
-  // 从本地存储获取用户信息
-  userEmail.value = localStorage.getItem('userEmail') || '用户'
-})
-
-const handleLogout = () => {
-  // 清除登录状态
-  localStorage.removeItem('isLoggedIn')
-  localStorage.removeItem('userEmail')
-  localStorage.removeItem('userName')
-  
-  // 路由跳转到登录页
-  router.push('/login')
-}
 </script>
 
 <style scoped>

@@ -12,16 +12,17 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import LoginComponent from '@/components/LoginComponent.vue'
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 // 登录相关事件处理
 const handleSignIn = (data: { email: string; password: string }) => {
   console.log('Sign in attempt:', data)
   
-  // 登录成功后保存状态到 localStorage
-  localStorage.setItem('isLoggedIn', 'true')
-  localStorage.setItem('userEmail', data.email)
+  // 使用store管理登录状态，传递用户信息
+  authStore.login(data.email)
   
   // 路由跳转到主页
   router.push('/home')
