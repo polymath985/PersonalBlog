@@ -1,38 +1,36 @@
-using Backend.DataBase;
 using Backend.Controllers;
 using Backend.Models;
+using PersonalBlog.DataBase;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Managers
 {
     public class UserDataManager
     {
-        private static readonly Lazy<UserDataManager> _instanceHolder = new Lazy<UserDataManager>(() => new UserDataManager());
+        private readonly BlogDbContext _context;
 
-        public static UserDataManager Instance => _instanceHolder.Value;
-
-        private UserDataManager()
+        public UserDataManager(BlogDbContext context)
         {
+            _context = context;
         }
 
         ///<summary>
         ///与数据库互动，获取新用户ID
         ///<summary>
-        public UserData? AddUserData(UserData userData)
+        public async Task<UserData?> AddUserDataAsync(UserData userData)
         {
             try
             {
-                // 使用数据库操作创建用户
-                int newId = DataBaseOperator.CreateUser(userData);
-                if (newId > 0)
+                // 检查邮箱是否已存在
+                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == userData.Email);
+                if (existingUser != null)
                 {
-                    userData.Id = newId;
+                    throw new Exception("邮箱地址已被使用");
+                }
 
-                    return userData;
-                }
-                else
-                {
-                    throw new Exception("数据库创建用户失败");
-                }
+                _context.Users.Add(userData);
+                await _context.SaveChangesAsync();
+                return userData;
             }
             catch
             {
@@ -40,32 +38,23 @@ namespace Backend.Managers
             }
         }
 
-        public bool ValidateUser(SignInRequest request)
+        public async Task<bool> ValidateUserAsync(SignInRequest request)
         {
-
-            if (DataBaseOperator.ValidateUserCredentials(request.Email, request.Password))
-            {
-                return true;
-            }
-            return false;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            return user != null && user.Password == request.Password;
         }
 
-        public void RemoveUserData(UserData userData)
+        public async Task RemoveUserDataAsync(UserData userData)
         {
-            DataBaseOperator.DeleteUser(userData.Id);
+            _context.Users.Remove(userData);
+            await _context.SaveChangesAsync();
         }
 
-        public UserData? GetUserDataById(int id)
+        public async Task<UserData?> GetUserDataByIdAsync(int id)
         {
             try
             {
-                // 首先从数据库获取
-                var userData = DataBaseOperator.GetUserById(id);
-                if (userData != null)
-                {
-                    return userData;
-                }
-                return null;
+                return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             }
             catch (Exception ex)
             {
@@ -74,17 +63,11 @@ namespace Backend.Managers
             }
         }
 
-        public UserData? GetUserDataByEmail(string email)
+        public async Task<UserData?> GetUserDataByEmailAsync(string email)
         {
             try
             {
-                // 首先从数据库获取
-                var userData = DataBaseOperator.GetUserByEmail(email);
-                if (userData != null)
-                {
-                    return userData;
-                }
-                return null;
+                return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             }
             catch (Exception ex)
             {
@@ -93,29 +76,26 @@ namespace Backend.Managers
             }
         }
 
-        public IEnumerable<UserData>? GetAllUsers()
+        public async Task<IEnumerable<UserData>?> GetAllUsersAsync()
         {
             try
             {
-                // 首先从数据库获取所有用户
-                var usersFromDb = DataBaseOperator.GetAllUsers();
-                return usersFromDb;
+                return await _context.Users.ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"数据库查询失败: {ex.Message}");
                 return null;
             }
-
         }
 
-        public void UpdateUserData(UserData userData)
+        public async Task UpdateUserDataAsync(UserData userData)
         {
-            var existingUser = GetUserDataById(userData.Id);
+            var existingUser = await GetUserDataByIdAsync(userData.Id);
             if (existingUser != null)
             {
-                RemoveUserData(existingUser);
-                AddUserData(userData);
+                _context.Entry(existingUser).CurrentValues.SetValues(userData);
+                await _context.SaveChangesAsync();
             }
         }
 
