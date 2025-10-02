@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import HomeView from '@/views/HomeView.vue'
+import BlogView from '@/views/BlogView.vue'
+import BlogDetailView from '@/views/BlogDetailView.vue'
+import BlogCreateView from '@/views/BlogCreateView.vue'
 import Logout from '@/components/Logout.vue'
 
 const router = createRouter({
@@ -22,7 +25,25 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path:"/logout",
+      path: '/blogs',
+      name: 'blogs',
+      component: BlogView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/blog/create',
+      name: 'blogCreate',
+      component: BlogCreateView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/blog/:id',
+      name: 'blogDetail',
+      component: BlogDetailView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/logout',
       component: Logout
     }
   ]

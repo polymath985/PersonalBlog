@@ -12,7 +12,7 @@ const baseFolder =
         ? `${env.APPDATA}/ASP.NET/https`
         : `${env.HOME}/.aspnet/https`;
 
-const certificateName = "vueapp1.client";
+const certificateName = "PersonalBlog";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
@@ -34,8 +34,9 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     }
 }
 
+// 后端 API 地址 - 使用 HTTPS
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:5297';
+    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7005';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -47,20 +48,28 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
+            // 代理所有 /api 开头的请求到后端
+            // 后端路由已包含 /api 前缀,所以直接转发,不重写路径
+            '/api': {
+                target: target,
+                changeOrigin: true,
                 secure: false
             },
-            '^/userdata': {
-                target,
+            // 代理静态资源 (图片等)
+            '/images': {
+                target: target,
+                changeOrigin: true,
                 secure: false
             },
-            '^/UserData': {
-                target,
+            '/files': {
+                target: target,
+                changeOrigin: true,
                 secure: false
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '5156'),
+        strictPort: false,
+        host: true,
         https: {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),

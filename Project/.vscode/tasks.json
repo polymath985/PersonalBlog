@@ -4,7 +4,7 @@
 		{
 			"label": "启动后端服务",
 			"type": "shell",
-			"command": "dotnet run --project Backend/Backend.csproj",
+			"command": "dotnet run --project Backend/Backend.csproj --launch-profile https",
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build",

@@ -1,9 +1,44 @@
-@Backend_HostAddress = http://localhost:5297
+@Backend_HostAddress = https://localhost:7005
 
-GET {{Backend_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1. 注册用户
+POST {{Backend_HostAddress}}/api/UserData/register
+Content-Type: application/json
 
-GET {{Backend_HostAddress}}}/user
-Accept: application/json
+{
+  "name": "张三",
+  "email": "zhangsan@example.com",
+  "password": "123456"
+}
+
+###
+
+### 2. 用户登录 (获取 UserId)
+POST {{Backend_HostAddress}}/api/UserData/login
+Content-Type: application/json
+
+{
+  "email": "zhangsan@example.com",
+  "password": "123456"
+}
+
+###
+
+### 3. 创建博客 (使用上面登录返回的 UserId)
+# 注意: 将下面的 authorId 替换为实际的用户 GUID
+POST {{Backend_HostAddress}}/api/Blog/create
+Content-Type: application/json
+
+{
+  "authorId": "049ac648-0176-4be4-88f1-e14838e15152",
+  "title": "我的第一篇博客",
+  "content": "这是我的第一篇博客内容,使用 ASP.NET Core 和 Vue.js 搭建。学习了很多新技术!",
+  "tags": "技术,编程,ASP.NET,Vue"
+}
+
+###
+
+### 4. 获取用户的所有博客
+# 注意: 将 userId 参数替换为实际的用户 GUID
+GET {{Backend_HostAddress}}/api/Blog/all?userId=049ac648-0176-4be4-88f1-e14838e15152
 
 ###

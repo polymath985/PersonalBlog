@@ -12,7 +12,7 @@
         
         <div class="nav-links">
           <a href="/" class="nav-link">首页</a>
-          <a href="/posts" class="nav-link">文章</a>
+          <a href="/blogs" class="nav-link">文章</a>
           <a href="/projects" class="nav-link">项目</a>
           <a href="/about" class="nav-link">关于</a>
         </div>

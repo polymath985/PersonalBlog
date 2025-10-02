@@ -153,7 +153,7 @@ const handleSignIn = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('/UserData/SignIn', {
+    const response = await fetch('/api/UserData/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ const handleSignUp = async () => {
   isLoading.value = true
   try {
     // 调用后端API注册用户
-    const response = await fetch('/UserData/register', {
+    const response = await fetch('/api/UserData/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ const handleSignUp = async () => {
       if (response.status === 409) {
         showMessage('该邮箱已被注册', 'error')
       } else if (response.status === 400) {
-        showMessage('请填写完整信息', 'error')
+        showMessage(errorText, 'error')
       }else if(response.status == 500){
         showMessage("后端接收到信息，但写入错误","error")
       }

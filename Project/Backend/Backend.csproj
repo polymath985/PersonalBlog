@@ -4,26 +4,30 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <SpaRoot>..\Frontend</SpaRoot>
-    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:5156</SpaProxyServerUrl>
+    <!-- 禁用 SPA 自动启动 -->
+    <!-- <SpaRoot>..\Frontend</SpaRoot> -->
+    <!-- <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand> -->
+    <!-- <SpaProxyServerUrl>https://localhost:5156</SpaProxyServerUrl> -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+    <!-- 禁用 SPA Proxy 以避免自动启动前端 -->
+    <!-- <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>9.*-*</Version>
-    </PackageReference>
+    </PackageReference> -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageReference Include="SQLite" Version="3.13.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119"/>
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- 移除前端项目引用,避免自动启动 -->
+  <!-- <ItemGroup>
     <ProjectReference Include="..\Frontend\Frontend.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-  </ItemGroup>
+  </ItemGroup> -->
 
 </Project>

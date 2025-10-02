@@ -80,7 +80,10 @@
     "**/*.esproj.user": true,
     "**/*.editorconfig": true,
     "**/*.user": true,
-    "**/Properties": true,
+
+    //数据库临时文件
+    "**/*.db-shm":true,
+    "**/*.db-wal":true,
 
     // Node.js 相关文件
     "**/node_modules": true,
@@ -103,5 +106,15 @@
     //git相关文件
     "**/.gitignore": true,
     "**/.gitattributes": true
-  }
+  },
+
+  // 禁用 Java 相关扩展（此工作区仅用于 C# 和 Vue.js）
+  // 这不会卸载扩展,只是在当前工作区禁用它们
+  "java.enabled": false,
+  "java.jdt.ls.java.home": null,
+  "redhat.telemetry.enabled": false,
+  
+  // 可以通过 extensions.json 更精确地控制扩展启用/禁用
+  // 如果需要完全禁用某些扩展,请在下面的 extensions.json 中配置
+  "extensions.autoUpdate": true
 }

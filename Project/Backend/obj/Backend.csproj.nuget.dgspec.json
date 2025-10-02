@@ -54,15 +54,15 @@
               "target": "Package",
               "version": "[9.0.6, )"
             },
-            "Microsoft.AspNetCore.SpaProxy": {
-              "target": "Package",
-              "version": "[9.*-*, )"
-            },
             "Microsoft.EntityFrameworkCore.Design": {
               "target": "Package",
               "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.0, )"
             },
