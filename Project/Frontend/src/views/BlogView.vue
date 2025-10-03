@@ -81,7 +81,7 @@
         <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm9.78-2.22a.751.751 0 0 0-1.042-.018.751.751 0 0 0-.018 1.042L9.94 8.5l-1.72 1.696a.75.75 0 1 0 1.06 1.06L11 9.56l1.72 1.696a.75.75 0 1 0 1.06-1.06L12.06 8.5l1.72-1.696a.75.75 0 1 0-1.06-1.06L11 7.44 9.28 5.744Z" fill="currentColor"/>
       </svg>
       <p>{{ error }}</p>
-      <button @click="loadBlogs" class="retry-button">重试</button>
+      <button @click="loadBlogs(null)" class="retry-button">重试</button>
     </div>
 
     <!-- 文章列表 -->
@@ -92,11 +92,12 @@
           :key="blog.id"
           :title="blog.title"
           :description="getExcerpt(blog.content)"
-          :icon="'document'"
+          :icon="'book'"
           :tags="parseTags(blog.tags)"
           :stats="{
-            views: 0,
-            comments: 0
+            views: blog.views || 0,
+            likes: blog.likes || 0,
+            comments: blog.commentsCount || 0
           }"
           :updateTime="formatDate(blog.updatedAt || blog.createdAt)"
           :featured="false"
@@ -123,6 +124,12 @@ import ContentBox from '@/components/ContentBox.vue'
 
 const router = useRouter()
 
+interface Props {
+  userId?: string | null
+}
+
+const props = defineProps<Props>()
+
 // 响应式数据
 const blogs = ref<any[]>([])
 const loading = ref(true)
@@ -133,16 +140,21 @@ const allTags = ref(['All'])
 const totalViews = ref(0)
 
 // 加载博客列表
-const loadBlogs = async () => {
+const loadBlogs = async (userId: string | null) => {
   loading.value = true
   error.value = ''
-  
+  let response;
+
+
   try {
-    // TODO: 替换为实际的用户ID,可以从登录状态中获取
-    const userId = localStorage.getItem('userId') || '049ac648-0176-4be4-88f1-e14838e15152'
-    
-    const response = await fetch(`/api/Blog/all?userId=${userId}`)
-    
+    // 获取所有博客（不传 userId 参数）
+    // 如果需要获取特定用户的博客，使用: `/api/Blog/all?userId=${userId}`
+    if(userId){
+       response = await fetch(`/api/Blog/all?userId=${userId}`)
+    }else{
+       response = await fetch('/api/Blog/all')
+    }
+
     if (!response.ok) {
       throw new Error('获取文章列表失败')
     }
@@ -159,6 +171,9 @@ const loadBlogs = async () => {
       }
     })
     allTags.value = Array.from(tagsSet)
+    
+    // 计算总浏览量
+    totalViews.value = data.reduce((sum: number, blog: any) => sum + (blog.views || 0), 0)
     
   } catch (err) {
     error.value = err instanceof Error ? err.message : '加载失败,请重试'
@@ -248,7 +263,7 @@ const createBlog = () => {
 
 // 组件挂载时加载数据
 onMounted(() => {
-  loadBlogs()
+  loadBlogs(props.userId || null)
 })
 </script>
 

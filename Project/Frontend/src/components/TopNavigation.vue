@@ -58,8 +58,8 @@
           <div v-if="showUserMenu" class="user-dropdown">
             <div class="dropdown-header">
               <div class="user-info">
-                <strong>用户名</strong>
-                <div class="user-email">user@example.com</div>
+                <strong>用户名:{{ userName }}</strong>
+                <div class="user-email">{{ userEmail }}</div>
               </div>
             </div>
             <div class="dropdown-divider"></div>
@@ -78,9 +78,14 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import router from '@/router'
 
+
 // 响应式数据
 const searchQuery = ref('')
 const showUserMenu = ref(false)
+
+//获取localStorage中的用户信息
+const userName = localStorage.getItem('userName') || '用户名'
+const userEmail = localStorage.getItem('userEmail') || '用户邮箱'
 
 // 搜索功能
 const handleSearch = () => {

@@ -120,7 +120,7 @@
 
           <textarea 
             v-model="form.content" 
-            placeholder="开始书写你的文章内容...&#10;&#10;支持 Markdown 格式:&#10;- **粗体** 或 *斜体*&#10;- `代码`&#10;- [链接文字](链接地址)&#10;&#10;让思想自由流淌..."
+            placeholder="开始书写你的文章内容...&#10;&#10;支持完整的 Markdown 语法:&#10;# 一级标题 (注意 # 后有空格)&#10;## 二级标题&#10;**粗体** *斜体* ~~删除线~~&#10;`行内代码`&#10;[链接文字](链接地址)&#10;- 列表项&#10;> 引用&#10;&#10;让思想自由流淌..."
             class="content-textarea"
             @input="validateForm"
             ref="contentTextarea"
@@ -181,8 +181,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
 const router = useRouter()
+
+// 配置 marked 选项
+marked.setOptions({
+  breaks: true, // 支持 GitHub 风格的换行
+  gfm: true // 启用 GitHub Flavored Markdown
+})
 
 // 表单数据
 const form = ref({
@@ -318,39 +326,31 @@ const insertCodeBlock = () => {
   }, 0)
 }
 
-// 渲染内容 (简单的 Markdown 渲染)
+// 渲染内容 (使用 marked 和 DOMPurify)
 const renderContent = (content: string): string => {
   if (!content) return ''
   
-  let html = content
-  
-  // 处理代码块
-  html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-  
-  // 处理段落
-  html = html.split('\n\n').map(para => {
-    if (!para.startsWith('<pre>')) {
-      return `<p>${para}</p>`
+  try {
+    // 使用 marked 解析 Markdown
+    const rawHtml = marked.parse(content) as string
+    
+    // 在开发环境下输出调试信息
+    if (import.meta.env.DEV) {
+      console.log('原始 Markdown:', content.substring(0, 100))
+      console.log('渲染后的 HTML:', rawHtml.substring(0, 200))
     }
-    return para
-  }).join('')
-  
-  // 处理粗体
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  
-  // 处理斜体
-  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>')
-  
-  // 处理行内代码
-  html = html.replace(/`(.*?)`/g, '<code>$1</code>')
-  
-  // 处理链接
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
-  
-  // 处理换行
-  html = html.replace(/\n/g, '<br>')
-  
-  return html
+    
+    // 使用 DOMPurify 净化 HTML，防止 XSS 攻击
+    const cleanHtml = DOMPurify.sanitize(rawHtml, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'div', 'span'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title']
+    })
+    
+    return cleanHtml
+  } catch (error) {
+    console.error('Markdown 渲染失败:', error)
+    return '<p class="error">预览渲染失败，请检查 Markdown 语法</p>'
+  }
 }
 
 // 保存草稿到本地
@@ -898,12 +898,62 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 .preview-body {
   color: #c9d1d9;
   line-height: 1.8;
+  word-wrap: break-word;
 }
 
+/* 段落 */
 .preview-body :deep(p) {
   margin: 1rem 0;
+  line-height: 1.8;
 }
 
+.preview-body :deep(p:first-child) {
+  margin-top: 0;
+}
+
+.preview-body :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+/* 标题 */
+.preview-body :deep(h1),
+.preview-body :deep(h2),
+.preview-body :deep(h3),
+.preview-body :deep(h4),
+.preview-body :deep(h5),
+.preview-body :deep(h6) {
+  color: #ffffff;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem 0;
+  line-height: 1.3;
+}
+
+.preview-body :deep(h1) {
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.preview-body :deep(h2) {
+  font-size: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.preview-body :deep(h3) {
+  font-size: 1.25rem;
+}
+
+.preview-body :deep(h4) {
+  font-size: 1.1rem;
+}
+
+.preview-body :deep(h5),
+.preview-body :deep(h6) {
+  font-size: 1rem;
+}
+
+/* 文字样式 */
 .preview-body :deep(strong) {
   color: #ffffff;
   font-weight: 600;
@@ -914,16 +964,24 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
   font-style: italic;
 }
 
+.preview-body :deep(s),
+.preview-body :deep(del) {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* 行内代码 */
 .preview-body :deep(code) {
   background: #161b22;
   border: 1px solid #30363d;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Courier New', 'Consolas', monospace;
   font-size: 0.9em;
   color: #ff7b72;
 }
 
+/* 代码块 */
 .preview-body :deep(pre) {
   background: #161b22;
   border: 1px solid #30363d;
@@ -938,8 +996,10 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
   border: none;
   padding: 0;
   color: #c9d1d9;
+  font-size: 0.9rem;
 }
 
+/* 链接 */
 .preview-body :deep(a) {
   color: #58a6ff;
   text-decoration: none;
@@ -949,6 +1009,85 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 
 .preview-body :deep(a:hover) {
   border-bottom-color: #58a6ff;
+}
+
+/* 列表 */
+.preview-body :deep(ul),
+.preview-body :deep(ol) {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.preview-body :deep(li) {
+  margin: 0.5rem 0;
+}
+
+.preview-body :deep(ul) {
+  list-style-type: disc;
+}
+
+.preview-body :deep(ol) {
+  list-style-type: decimal;
+}
+
+.preview-body :deep(li > ul),
+.preview-body :deep(li > ol) {
+  margin: 0.25rem 0;
+}
+
+/* 引用 */
+.preview-body :deep(blockquote) {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #58a6ff;
+  background: #161b22;
+  color: #8b949e;
+}
+
+.preview-body :deep(blockquote p) {
+  margin: 0.5rem 0;
+}
+
+/* 水平线 */
+.preview-body :deep(hr) {
+  border: none;
+  border-top: 1px solid #30363d;
+  margin: 1.5rem 0;
+}
+
+/* 表格 */
+.preview-body :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #30363d;
+}
+
+.preview-body :deep(thead) {
+  background: #161b22;
+}
+
+.preview-body :deep(th) {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 2px solid #30363d;
+}
+
+.preview-body :deep(td) {
+  padding: 0.75rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.preview-body :deep(tr:last-child td) {
+  border-bottom: none;
+}
+
+.preview-body :deep(tr:hover) {
+  background: #161b22;
 }
 
 /* 错误提示 */

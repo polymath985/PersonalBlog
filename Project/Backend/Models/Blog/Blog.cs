@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Backend.Utils;
 using UserDataModel = Backend.Models.UserData.UserData;
 
 namespace Backend.Models.Blog
@@ -15,11 +16,17 @@ namespace Backend.Models.Blog
         [Length(1,500)]
         public required string Content { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTimeHelper.GetBeijingTime();
 
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTimeHelper.GetBeijingTime();
 
         public string Tags { get; set; } = string.Empty;
+
+        public int Likes { get; set; } = 0;
+
+        public int CommentsCount { get; set; } = 0;
+
+        public int Views { get; set; } = 0;
 
         // 外键属性
         [ForeignKey(nameof(Author))]

@@ -107,7 +107,10 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth'
 import { ref, reactive } from 'vue'
+
+const authStore = useAuthStore()
 
 // 响应式数据
 const isActive = ref(false)
@@ -173,9 +176,12 @@ const handleSignIn = async () => {
       }
       return
     }
-
+    
+    
     const userData = await response.json()
     console.log('用户登录成功:', userData)
+
+    authStore.login(userData.email, userData.name, userData.id, userData.registerTime)
 
     // 触发事件传递给父组件
     emit('signIn', { ...signInForm })
@@ -230,6 +236,12 @@ const handleSignUp = async () => {
 
     const userData = await response.json()
     console.log('用户注册成功:', userData)
+    
+    // 将用户数据写入 localStorage
+    localStorage.setItem('userId', userData.id)
+    localStorage.setItem('userName', userData.name)
+    localStorage.setItem('userEmail', userData.email)
+    localStorage.setItem('registerTime', userData.registerTime)
     
     // 触发事件传递给父组件
     emit('signUp', { ...signUpForm })

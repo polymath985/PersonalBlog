@@ -4,11 +4,13 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     isLoggedIn: false,
     userEmail: '',
-    userName: ''
+    userName: '',
+    userId: '',
+    registerTime: ''
   }),
   
   actions: {
-    login(email?: string, name?: string) {
+    login(email?: string, name?: string, id?: string, registerTime?: string) {
       this.isLoggedIn = true;
       if (email) {
         this.userEmail = email;
@@ -18,6 +20,12 @@ export const useAuthStore = defineStore("auth", {
         this.userName = name;
         localStorage.setItem('userName', name);
       }
+      if (id) {
+        localStorage.setItem('userId', id);
+      }
+      if (registerTime) {
+        localStorage.setItem('registerTime', registerTime);
+      }
       localStorage.setItem("isLoggedIn", "true");
     },
     
@@ -25,11 +33,11 @@ export const useAuthStore = defineStore("auth", {
       this.isLoggedIn = false;
       this.userEmail = '';
       this.userName = '';
-      
-      // 清除所有localStorage数据
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("userEmail");
-      localStorage.removeItem("userName");
+      this.userId = '';
+      this.registerTime = '';
+
+      localStorage.clear();
+      localStorage.setItem("isLoggedIn", "false");
     },
     
     // 从localStorage初始化状态
@@ -37,11 +45,15 @@ export const useAuthStore = defineStore("auth", {
       const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
       const userEmail = localStorage.getItem('userEmail') || '';
       const userName = localStorage.getItem('userName') || '';
-      
+      const userId = localStorage.getItem('userId') || '';
+      const registerTime = localStorage.getItem('registerTime') || '';
+
       if (isLoggedIn) {
         this.isLoggedIn = true;
         this.userEmail = userEmail;
         this.userName = userName;
+        this.userId = userId;
+        this.registerTime = registerTime;
       }
     }
   },

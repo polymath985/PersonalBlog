@@ -26,10 +26,18 @@ namespace Backend.Controllers
                 Name = userData.Name,
             };
 
+            var UserDetailDto = new UserDetailDto
+            {
+                Id = newUser.Id,
+                Name = newUser.Name,
+                Email = newUser.Email,
+                RegisterTime = newUser.RegisterTime
+            };
+
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
 
-            return Ok("User registered successfully.");
+            return Ok(UserDetailDto);
         }
 
         [HttpPost("login")]
@@ -41,7 +49,37 @@ namespace Backend.Controllers
                 return Unauthorized("Invalid email or password.");
             }
 
-            return Ok(new { Message = "Login successful", UserId = user.Id, UserName = user.Name });
+            var UserDetailDto = new UserDetailDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                RegisterTime = user.RegisterTime
+            };
+
+            return Ok(UserDetailDto);
+        }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetUserDetails(string email)
+        {
+            var user = await _dbContext.Users
+                .Where(u => u.Email == email)
+                .Select(u => new UserDetailDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    RegisterTime = u.RegisterTime
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(user);
         }
     }
 }

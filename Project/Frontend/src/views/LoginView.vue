@@ -21,12 +21,9 @@ const authStore = useAuthStore()
 const handleSignIn = (data: { email: string; password: string }) => {
   console.log('Sign in attempt:', data)
   
-  // 使用store管理登录状态，传递用户信息
-  authStore.login(data.email)
-  
   // 路由跳转到主页
   router.push('/home')
-  
+  //authStore.login(data.email, data.password)
   console.log('登录成功，跳转到主页')
 }
 

@@ -21,6 +21,22 @@
 			}
 		},
 		{
+			"label": "启动后端服务 (清空数据库)",
+			"type": "shell",
+			"command": "dotnet run --project Backend/Backend.csproj --launch-profile https -- --clear-db",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
 			"label": "启动前端应用",
 			"type": "shell",
 			"command": "npm run dev",
@@ -53,6 +69,21 @@
 				"kind": "build",
 				"isDefault": true
 			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "🗑️ 启动全栈应用 (清空数据库)",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				"启动后端服务 (清空数据库)",
+				"启动前端应用"
+			],
+			"group": "build",
 			"presentation": {
 				"echo": true,
 				"reveal": "always",

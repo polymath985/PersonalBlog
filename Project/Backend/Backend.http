@@ -39,6 +39,10 @@ Content-Type: application/json
 
 ### 4. 获取用户的所有博客
 # 注意: 将 userId 参数替换为实际的用户 GUID
-GET {{Backend_HostAddress}}/api/Blog/all?userId=049ac648-0176-4be4-88f1-e14838e15152
+GET {{Backend_HostAddress}}/api/Blog/all
 
 ###
+
+### 5. 获取单篇博客详情
+# 注意: 将下面的 blogId 替换为实际的博客 GUID
+GET {{Backend_HostAddress}}/api/Blog?id=2f0062be-0df4-4ba4-bd9e-fd6f82b87126
