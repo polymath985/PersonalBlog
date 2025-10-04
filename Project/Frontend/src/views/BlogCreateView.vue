@@ -10,7 +10,7 @@
       </button>
 
       <h1 class="page-title">
-        <span class="gradient-text">创作新文章</span>
+        <span class="gradient-text">{{ editingBlogId ? '编辑文章' : '创作新文章' }}</span>
       </h1>
 
       <div class="header-actions">
@@ -33,7 +33,7 @@
             <path d="M3.5 3.75a.25.25 0 0 1 .25-.25h8.5a.25.25 0 0 1 .25.25v8.5a.25.25 0 0 1-.25.25h-8.5a.25.25 0 0 1-.25-.25v-8.5Z" fill="currentColor"/>
             <path d="M3.5 3.75a.25.25 0 0 1 .25-.25h8.5a.25.25 0 0 1 .25.25v8.5a.25.25 0 0 1-.25.25h-8.5a.25.25 0 0 1-.25-.25v-8.5ZM3.75 2A1.75 1.75 0 0 0 2 3.75v8.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 12.25v-8.5A1.75 1.75 0 0 0 12.25 2h-8.5Z" fill="currentColor"/>
           </svg>
-          {{ saving ? '发布中...' : '发布文章' }}
+          {{ saving ? (editingBlogId ? '更新中...' : '发布中...') : (editingBlogId ? '更新文章' : '发布文章') }}
         </button>
       </div>
     </header>
@@ -183,11 +183,67 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
+import hljs from 'highlight.js/lib/core'
+// 导入常用语言支持
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import python from 'highlight.js/lib/languages/python'
+import java from 'highlight.js/lib/languages/java'
+import cpp from 'highlight.js/lib/languages/cpp'
+import csharp from 'highlight.js/lib/languages/csharp'
+import css from 'highlight.js/lib/languages/css'
+import xml from 'highlight.js/lib/languages/xml' // HTML
+import json from 'highlight.js/lib/languages/json'
+import sql from 'highlight.js/lib/languages/sql'
+import bash from 'highlight.js/lib/languages/bash'
+import markdown from 'highlight.js/lib/languages/markdown'
+// 导入 GitHub Dark 主题样式
+import 'highlight.js/styles/github-dark.css'
+
+// 注册语言
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('python', python)
+hljs.registerLanguage('java', java)
+hljs.registerLanguage('cpp', cpp)
+hljs.registerLanguage('csharp', csharp)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('html', xml)
+hljs.registerLanguage('xml', xml)
+hljs.registerLanguage('json', json)
+hljs.registerLanguage('sql', sql)
+hljs.registerLanguage('bash', bash)
+hljs.registerLanguage('sh', bash)
+hljs.registerLanguage('markdown', markdown)
 
 const router = useRouter()
 
+// 创建自定义渲染器处理代码高亮
+const renderer = new marked.Renderer()
+
+renderer.code = function({ text, lang }: { text: string; lang?: string }) {
+  // 如果指定了语言且支持该语言，使用 highlight.js 高亮
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      const highlighted = hljs.highlight(text, { language: lang }).value
+      return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`
+    } catch (err) {
+      console.error('代码高亮失败:', err)
+    }
+  }
+  // 否则使用默认渲染（转义 HTML）
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+  return `<pre><code>${escaped}</code></pre>`
+}
+
 // 配置 marked 选项
 marked.setOptions({
+  renderer: renderer,
   breaks: true, // 支持 GitHub 风格的换行
   gfm: true // 启用 GitHub Flavored Markdown
 })
@@ -198,6 +254,9 @@ const form = ref({
   content: '',
   tags: [] as string[]
 })
+
+// 编辑模式：存储正在编辑的博客ID
+const editingBlogId = ref<string | null>(null)
 
 // 标签输入
 const tagInput = ref('')
@@ -395,7 +454,7 @@ const saveDraft = () => {
   alert('草稿已保存到本地!')
 }
 
-// 发布文章
+// 发布/更新文章
 const publishBlog = async () => {
   if (!canPublish.value) {
     alert('请填写完整的文章标题和内容')
@@ -414,33 +473,57 @@ const publishBlog = async () => {
       authorId: userId
     }
     
-    const response = await fetch('/api/Blog/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(blogData)
-    })
+    let response: Response
+    let blogId: string
+    
+    // 如果是编辑模式，使用 PUT 请求更新
+    if (editingBlogId.value) {
+      response = await fetch('/api/Blog/Update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: editingBlogId.value,
+          ...blogData
+        })
+      })
+      blogId = editingBlogId.value
+    } else {
+      // 否则创建新博客
+      response = await fetch('/api/Blog/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(blogData)
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        blogId = result.id
+      } else {
+        throw new Error('创建失败')
+      }
+    }
     
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(errorText || '发布失败')
+      throw new Error(errorText || (editingBlogId.value ? '更新失败' : '发布失败'))
     }
-    
-    const result = await response.json()
     
     // 清除本地草稿
     clearDraftFromLocal()
     
     // 显示成功提示
-    alert('文章发布成功!')
+    alert(editingBlogId.value ? '文章更新成功!' : '文章发布成功!')
     
     // 跳转到文章详情页
-    router.push(`/blog/${result.id}`)
+    router.push(`/blog/${blogId}`)
     
   } catch (error) {
-    console.error('发布文章失败:', error)
-    alert(error instanceof Error ? error.message : '发布失败,请重试')
+    console.error('发布/更新文章失败:', error)
+    alert(error instanceof Error ? error.message : '操作失败,请重试')
   } finally {
     saving.value = false
   }
@@ -457,7 +540,29 @@ const goBack = () => {
 
 // 组件挂载
 onMounted(() => {
-  loadDraftFromLocal()
+  // 优先检查是否有要编辑的博客
+  const editingBlogJson = localStorage.getItem('editingBlog')
+  if (editingBlogJson) {
+    try {
+      const editingBlog = JSON.parse(editingBlogJson)
+      form.value.title = editingBlog.title || ''
+      form.value.content = editingBlog.content || ''
+      form.value.tags = editingBlog.tags ? editingBlog.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t) : []
+      
+      // 存储博客ID以便更新时使用
+      editingBlogId.value = editingBlog.id
+      
+      // 清除 localStorage 中的编辑数据
+      localStorage.removeItem('editingBlog')
+      
+      console.log('加载编辑博客:', editingBlog)
+    } catch (err) {
+      console.error('加载编辑博客失败:', err)
+      loadDraftFromLocal()
+    }
+  } else {
+    loadDraftFromLocal()
+  }
   
   // 监听页面关闭事件
   window.addEventListener('beforeunload', handleBeforeUnload)

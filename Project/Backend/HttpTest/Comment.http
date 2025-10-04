@@ -1,0 +1,75 @@
+### 评论功能 API 测试文件
+### 基础 URL
+@baseUrl = https://localhost:7005
+@blogId = 7880BCD9-A178-423C-B8A6-F1912C1BDFEA
+@userId = 5154DC2C-782D-4872-89DA-A78030EF7BD6
+@commentId = 7a178f3d-0a3c-42b3-8f63-0c3f2556e5f1
+
+### 1. 创建顶级评论（不带 parentCommentId）
+POST {{baseUrl}}/api/Comment/create
+Content-Type: application/json
+
+{
+  "blogId": "{{blogId}}",
+  "userId": "{{userId}}",
+  "content": "这是一条测试评论！"
+}
+
+### 1.1 创建顶级评论（带 null 的 parentCommentId）
+POST {{baseUrl}}/api/Comment/create
+Content-Type: application/json
+
+{
+  "blogId": "{{blogId}}",
+  "userId": "{{userId}}",
+  "content": "这是另一条测试评论！",
+  "parentCommentId": null
+}
+
+### 2. 创建回复评论
+POST {{baseUrl}}/api/Comment/create
+Content-Type: application/json
+
+{
+  "blogId": "{{blogId}}",
+  "userId": "{{userId}}",
+  "content": "这是对评论的回复！",
+  "parentCommentId": "{{commentId}}"
+}
+
+### 3. 获取博客的所有评论（包含回复树）
+GET {{baseUrl}}/api/Comment/blog/{{blogId}}
+
+### 4. 获取单个评论详情
+GET {{baseUrl}}/api/Comment/{{commentId}}
+
+### 5. 更新评论内容
+PUT {{baseUrl}}/api/Comment/{{commentId}}
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "content": "这是更新后的评论内容"
+}
+
+### 6. 点赞评论
+POST {{baseUrl}}/api/Comment/{{commentId}}/like
+Content-Type: application/json
+
+{
+  "isLiked": true
+}
+
+### 7. 取消点赞评论
+POST {{baseUrl}}/api/Comment/{{commentId}}/like
+Content-Type: application/json
+
+{
+  "isLiked": false
+}
+
+### 8. 获取用户的所有评论
+GET {{baseUrl}}/api/Comment/user/{{userId}}
+
+### 9. 删除评论
+DELETE {{baseUrl}}/api/Comment/{{commentId}}

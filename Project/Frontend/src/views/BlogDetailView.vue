@@ -28,7 +28,23 @@
 
       <!-- 文章头部 -->
       <header class="article-header">
-        <h1 class="article-title">{{ blog.title }}</h1>
+        <!-- 标题和编辑按钮 -->
+        <div class="title-container">
+          <h1 class="article-title">{{ blog.title }}</h1>
+          
+          <!-- 编辑按钮（仅作者可见） -->
+          <button 
+            v-if="isAuthor" 
+            class="edit-blog-button"
+            @click="editBlog"
+            title="编辑文章"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z" fill="currentColor"/>
+            </svg>
+            <span>编辑</span>
+          </button>
+        </div>
         
         <div class="article-meta">
           <div class="meta-item">
@@ -93,11 +109,18 @@
       <!-- 文章底部 -->
       <footer class="article-footer">
         <div class="footer-actions">
-          <button class="action-button like-button" @click="toggleLike">
+          <button 
+            class="action-button like-button" 
+            :class="{ 'liked': liked }"
+            @click="toggleLike"
+          >
             <svg width="20" height="20" viewBox="0 0 16 16">
-              <path d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z" fill="currentColor"/>
+              <!-- 已点赞时显示实心图标 -->
+              <path v-if="liked" d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z" fill="currentColor"/>
+              <!-- 未点赞时显示空心图标 -->
+              <path v-else d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z" fill="currentColor"/>
             </svg>
-            <span>{{ liked ? '已点赞' : '点赞' }}</span>
+            <span>{{ liked ? '取消点赞' : '点赞' }}</span>
           </button>
           
           <button class="action-button share-button" @click="shareArticle">
@@ -120,30 +143,210 @@
           </div>
         </div>
       </footer>
+
+      <!-- 评论区 -->
+      <section class="comments-section">
+        <h3 class="comments-title">
+          <svg width="20" height="20" viewBox="0 0 16 16">
+            <path d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.061l-2.574 2.573A1.458 1.458 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1ZM1.5 2.75v5.5c0 .138.112.25.25.25h1a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h3.5a.25.25 0 0 0 .25-.25v-5.5a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13 2a.25.25 0 0 0-.25-.25h-.5a.75.75 0 0 1 0-1.5h.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 14.25 12H14v1.543a1.458 1.458 0 0 1-2.487 1.03L9.22 12.28a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l2.22 2.22v-2.19a.75.75 0 0 1 .75-.75h1a.25.25 0 0 0 .25-.25Z" fill="currentColor"/>
+          </svg>
+          评论 {{ comments.length }}
+        </h3>
+
+        <!-- 评论加载状态 -->
+        <div v-if="commentsLoading" class="comments-loading">
+          <div class="loading-spinner-small"></div>
+          <span>加载评论中...</span>
+        </div>
+
+        <!-- 评论列表 -->
+        <div v-else-if="comments.length > 0" class="comments-list">
+          <CommentBox
+            v-for="comment in comments"
+            :key="comment.id"
+            :comment="comment"
+            :current-user-id="currentUserId"
+            @delete="handleDeleteComment"
+            @like="handleLikeComment"
+            @reply="handleReplyComment"
+          />
+        </div>
+
+        <!-- 无评论提示 -->
+        <div v-else class="no-comments">
+          <svg width="48" height="48" viewBox="0 0 16 16">
+            <path d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.061l-2.574 2.573A1.458 1.458 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1ZM1.5 2.75v5.5c0 .138.112.25.25.25h1a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h3.5a.25.25 0 0 0 .25-.25v-5.5a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Z" fill="currentColor"/>
+          </svg>
+          <p>还没有评论，快来抢沙发吧！</p>
+        </div>
+      </section>
+
+      <!-- 底部留出空间给 BottomComment 组件 -->
+      <div class="bottom-spacer"></div>
     </article>
+
+    <!-- 底部评论输入框（固定在屏幕底部） -->
+    <BottomComment
+      v-if="blog"
+      :reply-target="replyTarget"
+      @send="handleSendComment"
+      @cancel-reply="handleCancelReply"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
+import hljs from 'highlight.js/lib/core'
+// 导入常用语言支持
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import python from 'highlight.js/lib/languages/python'
+import java from 'highlight.js/lib/languages/java'
+import cpp from 'highlight.js/lib/languages/cpp'
+import csharp from 'highlight.js/lib/languages/csharp'
+import css from 'highlight.js/lib/languages/css'
+import xml from 'highlight.js/lib/languages/xml' // HTML
+import json from 'highlight.js/lib/languages/json'
+import sql from 'highlight.js/lib/languages/sql'
+import bash from 'highlight.js/lib/languages/bash'
+import markdown from 'highlight.js/lib/languages/markdown'
+// 导入 GitHub Dark 主题样式
+import 'highlight.js/styles/github-dark.css'
+
+// 注册语言
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('python', python)
+hljs.registerLanguage('java', java)
+hljs.registerLanguage('cpp', cpp)
+hljs.registerLanguage('csharp', csharp)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('html', xml)
+hljs.registerLanguage('xml', xml)
+hljs.registerLanguage('json', json)
+hljs.registerLanguage('sql', sql)
+hljs.registerLanguage('bash', bash)
+hljs.registerLanguage('sh', bash)
+hljs.registerLanguage('markdown', markdown)
+
+import CommentBox from '@/components/CommentBox.vue'
+import BottomComment from '@/components/BottomComment.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-// 配置 marked
+// 创建自定义渲染器处理代码高亮
+const renderer = new marked.Renderer()
+
+renderer.code = function({ text, lang }: { text: string; lang?: string }) {
+  // 如果指定了语言且支持该语言，使用 highlight.js 高亮
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      const highlighted = hljs.highlight(text, { language: lang }).value
+      return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`
+    } catch (err) {
+      console.error('代码高亮失败:', err)
+    }
+  }
+  // 否则使用默认渲染（转义 HTML）
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+  return `<pre><code>${escaped}</code></pre>`
+}
+
+// 配置 marked 选项
 marked.setOptions({
+  renderer: renderer,
   breaks: true,
   gfm: true
 })
+
+// 接口定义
+interface Comment {
+  id: string
+  userName: string
+  content: string
+  createdAt: string
+  likes: number
+  userId: string
+  replies?: Comment[]
+}
+
+interface UserData {
+  id: string
+  name: string
+  email: string
+  password: string
+}
 
 // 响应式数据
 const blog = ref<any>(null)
 const loading = ref(true)
 const error = ref('')
 const liked = ref(false)
+
+// 评论相关
+const comments = ref<Comment[]>([])
+const commentsLoading = ref(false)
+const replyTarget = ref<Comment | null>(null)
+const currentUserId = ref<string>('')
+
+// LocalStorage 键名
+const LIKED_BLOGS_KEY = 'likedBlogs'
+
+// 判断当前用户是否是文章作者
+const isAuthor = computed(() => {
+  if (!blog.value || !currentUserId.value) return false
+  return blog.value.authorId === currentUserId.value
+})
+
+// 检查用户是否已点赞该博客
+const checkIfLiked = (blogId: string): boolean => {
+  try {
+    const likedBlogs = localStorage.getItem(LIKED_BLOGS_KEY)
+    if (!likedBlogs) return false
+    const likedList: string[] = JSON.parse(likedBlogs)
+    return likedList.includes(blogId)
+  } catch (err) {
+    console.error('检查点赞状态失败:', err)
+    return false
+  }
+}
+
+// 添加博客到已点赞列表
+const addToLikedBlogs = (blogId: string): void => {
+  try {
+    const likedBlogs = localStorage.getItem(LIKED_BLOGS_KEY)
+    const likedList: string[] = likedBlogs ? JSON.parse(likedBlogs) : []
+    if (!likedList.includes(blogId)) {
+      likedList.push(blogId)
+      localStorage.setItem(LIKED_BLOGS_KEY, JSON.stringify(likedList))
+    }
+  } catch (err) {
+    console.error('保存点赞状态失败:', err)
+  }
+}
+
+// 从已点赞列表中移除博客
+const removeFromLikedBlogs = (blogId: string): void => {
+  try {
+    const likedBlogs = localStorage.getItem(LIKED_BLOGS_KEY)
+    if (!likedBlogs) return
+    const likedList: string[] = JSON.parse(likedBlogs)
+    const filteredList = likedList.filter(id => id !== blogId)
+    localStorage.setItem(LIKED_BLOGS_KEY, JSON.stringify(filteredList))
+  } catch (err) {
+    console.error('移除点赞状态失败:', err)
+  }
+}
 
 // 加载文章详情
 const loadBlog = async () => {
@@ -171,6 +374,9 @@ const loadBlog = async () => {
     blog.value = data
     
     console.log('加载的博客数据:', data)
+    
+    // 检查用户是否已点赞
+    liked.value = checkIfLiked(blogId)
     
     // 增加浏览量
     await incrementViews(blogId)
@@ -228,8 +434,8 @@ const renderContent = (content: string): string => {
     
     // 使用 DOMPurify 净化 HTML，防止 XSS 攻击
     const cleanHtml = DOMPurify.sanitize(rawHtml, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'div', 'span'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title']
     })
     
     return cleanHtml
@@ -239,22 +445,38 @@ const renderContent = (content: string): string => {
   }
 }
 
-// 点赞功能
+// 点赞/取消点赞功能
 const toggleLike = async () => {
   if (!blog.value) return
   
+  const newLikedState = !liked.value
+  
   try {
     const response = await fetch(`/api/Blog/${blog.value.id}/like`, {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        isLiked: newLikedState
+      })
     })
     
     if (response.ok) {
       const data = await response.json()
       blog.value.likes = data.likes
-      liked.value = !liked.value
+      liked.value = newLikedState
+      
+      // 更新 localStorage
+      if (newLikedState) {
+        addToLikedBlogs(blog.value.id)
+      } else {
+        removeFromLikedBlogs(blog.value.id)
+      }
     }
   } catch (err) {
-    console.error('点赞失败:', err)
+    console.error('点赞操作失败:', err)
+    alert('操作失败，请稍后重试')
   }
 }
 
@@ -282,9 +504,194 @@ const goBack = () => {
   router.push('/blogs')
 }
 
+// 编辑博客
+const editBlog = () => {
+  if (!blog.value) return
+  
+  // 将博客数据存储到 localStorage 以便在编辑页面使用
+  const blogToEdit = {
+    id: blog.value.id,
+    title: blog.value.title,
+    content: blog.value.content,
+    tags: blog.value.tags,
+    authorId: blog.value.authorId,
+    authorName: blog.value.authorName
+  }
+  
+  localStorage.setItem('editingBlog', JSON.stringify(blogToEdit))
+  
+  // 跳转到创建/编辑页面
+  router.push('/blog/create')
+}
+
+// 获取当前用户信息
+const getCurrentUser = (): UserData | null => {
+  try {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+    if (!isLoggedIn) return null
+    
+    const userId = localStorage.getItem('userId')
+    const userName = localStorage.getItem('userName')
+    const userEmail = localStorage.getItem('userEmail')
+    
+    if (!userId || !userName) return null
+    
+    return {
+      id: userId,
+      name: userName,
+      email: userEmail || '',
+      password: '' // 密码不从localStorage读取
+    }
+  } catch {
+    return null
+  }
+}
+
+// 加载评论
+const loadComments = async () => {
+  if (!blog.value) return
+  
+  commentsLoading.value = true
+  
+  try {
+    const response = await fetch(`/api/Comment/blog/${blog.value.id}`)
+    
+    if (response.ok) {
+      const data = await response.json()
+      comments.value = data
+      console.log('加载的评论:', data)
+    } else {
+      console.error('加载评论失败:', response.statusText)
+    }
+  } catch (err) {
+    console.error('加载评论失败:', err)
+  } finally {
+    commentsLoading.value = false
+  }
+}
+
+// 发送评论
+const handleSendComment = async (content: string, parentCommentId?: string) => {
+  const user = getCurrentUser()
+  
+  if (!user) {
+    alert('请先登录后再评论')
+    return
+  }
+  
+  if (!blog.value) return
+  
+  try {
+    const response = await fetch('/api/Comment/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content,
+        blogId: blog.value.id,
+        userId: user.id,
+        parentCommentId: parentCommentId || null
+      })
+    })
+    
+    if (response.ok) {
+      // 重新加载评论
+      await loadComments()
+      
+      // 取消回复状态
+      replyTarget.value = null
+      
+      // 更新博客评论数
+      if (blog.value) {
+        blog.value.commentsCount = (blog.value.commentsCount || 0) + 1
+      }
+    } else {
+      const errorData = await response.json()
+      alert(`发送评论失败: ${errorData.message || '未知错误'}`)
+    }
+  } catch (err) {
+    console.error('发送评论失败:', err)
+    alert('发送评论失败，请稍后重试')
+  }
+}
+
+// 删除评论
+const handleDeleteComment = async (commentId: string) => {
+  const user = getCurrentUser()
+  
+  if (!user) {
+    alert('请先登录')
+    return
+  }
+  
+  try {
+    const response = await fetch(`/api/Comment/${commentId}?userId=${user.id}`, {
+      method: 'DELETE'
+    })
+    
+    if (response.ok) {
+      // 重新加载评论
+      await loadComments()
+      
+      // 更新博客评论数
+      if (blog.value && blog.value.commentsCount > 0) {
+        blog.value.commentsCount -= 1
+      }
+    } else {
+      const errorData = await response.json()
+      alert(`删除评论失败: ${errorData.message || '未知错误'}`)
+    }
+  } catch (err) {
+    console.error('删除评论失败:', err)
+    alert('删除评论失败，请稍后重试')
+  }
+}
+
+// 点赞评论
+const handleLikeComment = async (commentId: string) => {
+  try {
+    const response = await fetch(`/api/Comment/${commentId}/like`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (response.ok) {
+      // 重新加载评论以更新点赞数
+      await loadComments()
+    } else {
+      console.error('点赞评论失败')
+    }
+  } catch (err) {
+    console.error('点赞评论失败:', err)
+  }
+}
+
+// 回复评论
+const handleReplyComment = (comment: Comment) => {
+  replyTarget.value = comment
+}
+
+// 取消回复
+const handleCancelReply = () => {
+  replyTarget.value = null
+}
+
 // 组件挂载时加载数据
-onMounted(() => {
-  loadBlog()
+onMounted(async () => {
+  // 获取当前用户ID
+  const user = getCurrentUser()
+  if (user) {
+    currentUserId.value = user.id
+  }
+  
+  // 加载博客
+  await loadBlog()
+  
+  // 加载评论
+  await loadComments()
 })
 </script>
 
@@ -395,13 +802,48 @@ onMounted(() => {
   border-bottom: 1px solid #30363d;
 }
 
+.title-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .article-title {
+  flex: 1;
   font-size: 2.5rem;
   font-weight: 800;
-  margin: 0 0 1.5rem 0;
+  margin: 0;
   line-height: 1.2;
   color: #ffffff;
   letter-spacing: -0.02em;
+}
+
+.edit-blog-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #238636;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-blog-button:hover {
+  background: #2ea043;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(35, 134, 54, 0.3);
+}
+
+.edit-blog-button svg {
+  flex-shrink: 0;
 }
 
 .article-meta {
@@ -500,6 +942,7 @@ onMounted(() => {
   font-style: italic;
 }
 
+/* 内联代码 */
 .content-wrapper :deep(code) {
   background: #161b22;
   border: 1px solid #30363d;
@@ -510,6 +953,67 @@ onMounted(() => {
   color: #ff7b72;
 }
 
+/* 代码块 */
+.content-wrapper :deep(pre) {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.content-wrapper :deep(pre code) {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #c9d1d9;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* 标题 */
+.content-wrapper :deep(h1) {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #30363d;
+  color: #ffffff;
+}
+
+.content-wrapper :deep(h2) {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 1.8rem 0 0.8rem 0;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #30363d;
+  color: #ffffff;
+}
+
+.content-wrapper :deep(h3) {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.8rem 0;
+  color: #ffffff;
+}
+
+.content-wrapper :deep(h4) {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.6rem 0;
+  color: #c9d1d9;
+}
+
+.content-wrapper :deep(h5),
+.content-wrapper :deep(h6) {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  color: #c9d1d9;
+}
+
+/* 链接 */
 .content-wrapper :deep(a) {
   color: #58a6ff;
   text-decoration: none;
@@ -519,6 +1023,86 @@ onMounted(() => {
 
 .content-wrapper :deep(a:hover) {
   border-bottom-color: #58a6ff;
+}
+
+/* 列表 */
+.content-wrapper :deep(ul),
+.content-wrapper :deep(ol) {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.content-wrapper :deep(li) {
+  margin: 0.5rem 0;
+  line-height: 1.8;
+}
+
+.content-wrapper :deep(ul) {
+  list-style-type: disc;
+}
+
+.content-wrapper :deep(ol) {
+  list-style-type: decimal;
+}
+
+.content-wrapper :deep(li > ul),
+.content-wrapper :deep(li > ol) {
+  margin: 0.25rem 0;
+}
+
+/* 引用 */
+.content-wrapper :deep(blockquote) {
+  margin: 1.5rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #58a6ff;
+  background: #161b22;
+  color: #8b949e;
+}
+
+.content-wrapper :deep(blockquote p) {
+  margin: 0.5rem 0;
+}
+
+/* 水平线 */
+.content-wrapper :deep(hr) {
+  border: none;
+  border-top: 1px solid #30363d;
+  margin: 2rem 0;
+}
+
+/* 表格 */
+.content-wrapper :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: #0d1117;
+  border: 1px solid #30363d;
+}
+
+.content-wrapper :deep(th),
+.content-wrapper :deep(td) {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #30363d;
+}
+
+.content-wrapper :deep(th) {
+  background: #161b22;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.content-wrapper :deep(tr:hover) {
+  background: rgba(48, 54, 61, 0.3);
+}
+
+/* 图片 */
+.content-wrapper :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+  border: 1px solid #30363d;
 }
 
 /* 文章底部 */
@@ -563,6 +1147,25 @@ onMounted(() => {
   color: #f85149;
 }
 
+/* 已点赞状态样式 */
+.like-button.liked {
+  background: linear-gradient(135deg, #f85149 0%, #da3633 100%);
+  border-color: #f85149;
+  color: white;
+}
+
+.like-button.liked svg {
+  fill: white;
+  color: white;
+}
+
+.like-button.liked:hover {
+  background: linear-gradient(135deg, #da3633 0%, #c93230 100%);
+  border-color: #c93230;
+  color: white;
+  transform: translateY(-2px);
+}
+
 .author-card {
   display: flex;
   align-items: center;
@@ -601,14 +1204,93 @@ onMounted(() => {
   font-weight: 600;
 }
 
+/* 评论区样式 */
+.comments-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #30363d;
+}
+
+.comments-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 2rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c9d1d9;
+}
+
+.comments-title svg {
+  color: #58a6ff;
+}
+
+.comments-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #8b949e;
+}
+
+.loading-spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #30363d;
+  border-top-color: #58a6ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-comments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #8b949e;
+  text-align: center;
+}
+
+.no-comments svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-comments p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.bottom-spacer {
+  height: 120px;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .blog-detail-view {
     padding: 1rem;
   }
 
+  .title-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .article-title {
     font-size: 1.8rem;
+  }
+
+  .edit-blog-button {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 
   .content-wrapper {
@@ -622,6 +1304,10 @@ onMounted(() => {
   .action-button {
     width: 100%;
     justify-content: center;
+  }
+  
+  .bottom-spacer {
+    height: 140px;
   }
 }
 </style>

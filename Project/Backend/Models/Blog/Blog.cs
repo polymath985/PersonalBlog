@@ -13,7 +13,7 @@ namespace Backend.Models.Blog
         [Length(1, 20)]
         public required string Title { get; set; }
 
-        [Length(1,500)]
+        [Length(1,5000)]
         public required string Content { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTimeHelper.GetBeijingTime();

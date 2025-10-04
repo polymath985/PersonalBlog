@@ -64,7 +64,7 @@ namespace Backend.Controllers
                 views = blog.Views,
                 commentsCount = blog.CommentsCount
             });
-            
+            Console.WriteLine($"返回博客列表，数量: {blogList.Count}");
             return Ok(result);
         }
 
@@ -132,9 +132,9 @@ namespace Backend.Controllers
             return Ok(new { views = blog.Views });
         }
 
-        // 增加点赞数
+        // 切换点赞状态（点赞/取消点赞）
         [HttpPost("{id}/like")]
-        public async Task<ActionResult> IncrementLikesAsync(Guid id)
+        public async Task<ActionResult> ToggleLikeAsync(Guid id, [FromBody] LikeActionDto action)
         {
             var blog = await _dbcontext.Blogs.FindAsync(id);
             if (blog == null)
@@ -142,9 +142,22 @@ namespace Backend.Controllers
                 return NotFound("Blog not found.");
             }
 
-            blog.Likes++;
+            if (action.IsLiked)
+            {
+                // 点赞
+                blog.Likes++;
+            }
+            else
+            {
+                // 取消点赞
+                if (blog.Likes > 0)
+                {
+                    blog.Likes--;
+                }
+            }
+
             await _dbcontext.SaveChangesAsync();
-            return Ok(new { likes = blog.Likes });
+            return Ok(new { likes = blog.Likes, isLiked = action.IsLiked });
         }
     }
 }
