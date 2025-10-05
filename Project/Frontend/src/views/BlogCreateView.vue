@@ -116,6 +116,12 @@
                 <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25ZM7.5 6.5v1h1v-1h-1Zm-2 0v1h1v-1h-1Zm-2 0v1h1v-1h-1Z" fill="currentColor"/>
               </svg>
             </button>
+            <div class="toolbar-divider"></div>
+            <button @click="openImageUploadModal" class="toolbar-button" title="插入图片">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M1.75 2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 0 1 .03-.03l6.077-6.078a1.75 1.75 0 0 1 2.412-.06L14.5 10.31V2.75a.25.25 0 0 0-.25-.25Zm12.5-1H1.75C.784 1.5 0 2.284 0 3.25v9.5C0 13.216.784 14 1.75 14h12.5A1.75 1.75 0 0 0 16 12.25v-9.5A1.75 1.75 0 0 0 14.25 1.5Zm.22 11.28-4.5-4.5a.25.25 0 0 0-.342-.008L6.5 11.44l.72.72a.75.75 0 0 1-1.06 1.06l-1.5-1.5a.75.75 0 0 1 0-1.06l3.928-3.928a1.75 1.75 0 0 1 2.412.06l4.78 4.78v-8.81ZM10.5 5.25a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-1.5 0a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
 
           <textarea 
@@ -175,12 +181,46 @@
         </div>
       </aside>
     </div>
+
+    <!-- 图片上传弹窗 -->
+    <div v-if="showImageUploadModal" class="modal-overlay" @click="showImageUploadModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 16 16">
+              <path d="M1.75 2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 0 1 .03-.03l6.077-6.078a1.75 1.75 0 0 1 2.412-.06L14.5 10.31V2.75a.25.25 0 0 0-.25-.25Zm12.5-1H1.75C.784 1.5 0 2.284 0 3.25v9.5C0 13.216.784 14 1.75 14h12.5A1.75 1.75 0 0 0 16 12.25v-9.5A1.75 1.75 0 0 0 14.25 1.5Zm.22 11.28-4.5-4.5a.25.25 0 0 0-.342-.008L6.5 11.44l.72.72a.75.75 0 0 1-1.06 1.06l-1.5-1.5a.75.75 0 0 1 0-1.06l3.928-3.928a1.75 1.75 0 0 1 2.412.06l4.78 4.78v-8.81Z" fill="currentColor"/>
+            </svg>
+            上传图片
+          </h3>
+          <button @click="showImageUploadModal = false" class="modal-close">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ImageUpload @file-selected="handleImageFileSelected" />
+          
+          <div class="image-alt-input">
+            <label for="imageAlt">图片描述（可选）</label>
+            <input 
+              id="imageAlt"
+              v-model="imageAlt" 
+              type="text" 
+              placeholder="为图片添加描述，帮助屏幕阅读器用户"
+              class="alt-input"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import ImageUpload from '@/components/ImageUpload.vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -258,6 +298,9 @@ const form = ref({
 // 编辑模式：存储正在编辑的博客ID
 const editingBlogId = ref<string | null>(null)
 
+// 编辑模式：记录原始内容中的图片URL(用于对比删除)
+const originalImageUrls = ref<string[]>([])
+
 // 标签输入
 const tagInput = ref('')
 
@@ -268,6 +311,20 @@ const saving = ref(false)
 
 // DOM 引用
 const contentTextarea = ref<HTMLTextAreaElement | null>(null)
+
+// 图片上传相关
+const showImageUploadModal = ref(false)
+const imageAlt = ref('')
+const savedCursorPosition = ref(0) // 记录打开图片上传弹窗时的光标位置
+const savedScrollPosition = ref(0) // 记录打开图片上传弹窗时的滚动位置
+
+// 图片管理: 存储待上传的图片 { blobUrl -> file }
+interface PendingImage {
+  file: File
+  blobUrl: string
+  dataUrl?: string // Base64 Data URL 用于预览
+}
+const pendingImages = ref<PendingImage[]>([])
 
 // 自动保存
 let autoSaveTimer: ReturnType<typeof setTimeout> | null = null
@@ -385,13 +442,189 @@ const insertCodeBlock = () => {
   }, 0)
 }
 
+// 打开图片上传弹窗
+const openImageUploadModal = () => {
+  const textarea = contentTextarea.value
+  if (textarea) {
+    // 保存当前光标位置和滚动位置
+    savedCursorPosition.value = textarea.selectionStart
+    savedScrollPosition.value = textarea.scrollTop
+  }
+  showImageUploadModal.value = true
+}
+
+// 处理图片文件选择(不立即上传)
+const handleImageFileSelected = async (file: File, blobUrl: string) => {
+  const textarea = contentTextarea.value
+  if (!textarea) return
+  
+  // 读取文件为 Base64 Data URL 用于预览
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => resolve(e.target?.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+  
+  // 保存待上传的图片(包含 dataUrl 用于预览)
+  pendingImages.value.push({ file, blobUrl, dataUrl })
+  
+  // 使用保存的光标位置而不是当前位置
+  const insertPosition = savedCursorPosition.value
+  const alt = imageAlt.value || '图片'
+  const imageMarkdown = `\n![${alt}](${blobUrl})\n` // 先用 blob URL 作为标识
+  
+  // 在保存的位置插入图片
+  form.value.content = 
+    form.value.content.substring(0, insertPosition) +
+    imageMarkdown +
+    form.value.content.substring(insertPosition)
+  
+  // 关闭弹窗并重置
+  showImageUploadModal.value = false
+  imageAlt.value = ''
+  
+  // 等待 DOM 更新完成后再恢复位置
+  await nextTick()
+  
+  // 恢复滚动位置和光标位置
+  if (contentTextarea.value) {
+    const targetTextarea = contentTextarea.value
+    // 先设置滚动位置
+    targetTextarea.scrollTop = savedScrollPosition.value
+    // 聚焦并设置光标
+    targetTextarea.focus()
+    const newPosition = insertPosition + imageMarkdown.length
+    targetTextarea.setSelectionRange(newPosition, newPosition)
+    // 再次确保滚动位置（防止 focus 导致滚动）
+    targetTextarea.scrollTop = savedScrollPosition.value
+  }
+}
+
+// 从内容中提取所有图片URL
+const extractImageUrls = (content: string): string[] => {
+  const imageRegex = /!\[.*?\]\((https?:\/\/[^\s)]+)\)/g
+  const urls: string[] = []
+  let match
+  
+  while ((match = imageRegex.exec(content)) !== null) {
+    urls.push(match[1])
+  }
+  
+  return urls
+}
+
+// 批量上传所有待上传的图片
+const uploadAllPendingImages = async (): Promise<void> => {
+  if (pendingImages.value.length === 0) return
+  
+  const uploadPromises = pendingImages.value.map(async ({ file, blobUrl }) => {
+    try {
+      // 上传文件 (指定 category 为 blog)
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await fetch('/api/File/upload?category=blog', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (!response.ok) {
+        throw new Error('上传失败')
+      }
+      
+      const result = await response.json()
+      const fullUrl = `https://localhost:7005${result.url}`
+      
+      // 替换内容中的 blob URL 为真实 URL
+      form.value.content = form.value.content.replace(
+        new RegExp(blobUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        fullUrl
+      )
+      
+      // 释放 blob URL
+      URL.revokeObjectURL(blobUrl)
+      
+      return { success: true, blobUrl, fullUrl }
+    } catch (error) {
+      console.error('图片上传失败:', error)
+      return { success: false, blobUrl, error }
+    }
+  })
+  
+  const results = await Promise.all(uploadPromises)
+  
+  // 清空待上传列表
+  pendingImages.value = []
+  
+  // 检查是否有失败的上传
+  const failedUploads = results.filter(r => !r.success)
+  if (failedUploads.length > 0) {
+    throw new Error(`${failedUploads.length} 张图片上传失败,请重试`)
+  }
+}
+
+// 删除不再使用的图片
+const deleteUnusedImages = async (): Promise<void> => {
+  // 提取当前内容中的所有图片URL
+  const currentImageUrls = extractImageUrls(form.value.content)
+  
+  // 找出被删除的图片(原始有,现在没有)
+  // 支持 /uploads/ 和 /images/blog/ 路径
+  const deletedImageUrls = originalImageUrls.value.filter(
+    url => !currentImageUrls.includes(url) && (url.includes('/uploads/') || url.includes('/images/blog/'))
+  )
+  
+  if (deletedImageUrls.length === 0) return
+  
+  console.log('检测到删除的图片:', deletedImageUrls)
+  
+  // 批量删除图片
+  const deletePromises = deletedImageUrls.map(async (url) => {
+    try {
+      // 提取相对路径 (如 /images/blog/xxx.jpg 或 /uploads/xxx.jpg)
+      const urlObj = new URL(url)
+      const filePath = urlObj.pathname
+      
+      const response = await fetch(`/api/File?fileUrl=${encodeURIComponent(filePath)}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        console.warn(`删除图片失败: ${filePath}`)
+        return { success: false, url }
+      }
+      
+      console.log(`成功删除图片: ${filePath}`)
+      return { success: true, url }
+    } catch (error) {
+      console.error(`删除图片失败:`, error)
+      return { success: false, url }
+    }
+  })
+  
+  await Promise.all(deletePromises)
+}
+
 // 渲染内容 (使用 marked 和 DOMPurify)
 const renderContent = (content: string): string => {
   if (!content) return ''
   
   try {
+    // 替换 blob URL 为 data URL 以便在预览中显示
+    let processedContent = content
+    pendingImages.value.forEach(({ blobUrl, dataUrl }) => {
+      if (dataUrl) {
+        // 将所有 blob URL 替换为 data URL
+        processedContent = processedContent.replace(
+          new RegExp(blobUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+          dataUrl
+        )
+      }
+    })
+    
     // 使用 marked 解析 Markdown
-    const rawHtml = marked.parse(content) as string
+    const rawHtml = marked.parse(processedContent) as string
     
     // 在开发环境下输出调试信息
     if (import.meta.env.DEV) {
@@ -400,9 +633,11 @@ const renderContent = (content: string): string => {
     }
     
     // 使用 DOMPurify 净化 HTML，防止 XSS 攻击
+    // 对于代码高亮，我们需要保留所有 span 标签和 class 属性
     const cleanHtml = DOMPurify.sanitize(rawHtml, {
       ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'div', 'span'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title']
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title', 'style'],
+      ALLOW_DATA_ATTR: false
     })
     
     return cleanHtml
@@ -464,6 +699,28 @@ const publishBlog = async () => {
   saving.value = true
   
   try {
+    // 第一步: 上传所有待上传的图片
+    if (pendingImages.value.length > 0) {
+      try {
+        await uploadAllPendingImages()
+      } catch (error) {
+        alert(error instanceof Error ? error.message : '图片上传失败')
+        saving.value = false
+        return
+      }
+    }
+    
+    // 第二步: 如果是编辑模式,删除不再使用的图片
+    if (editingBlogId.value) {
+      try {
+        await deleteUnusedImages()
+      } catch (error) {
+        console.error('删除未使用图片失败:', error)
+        // 图片删除失败不应阻止文章更新,只记录错误
+      }
+    }
+    
+    // 第三步: 发布/更新文章
     const userId = localStorage.getItem('userId') || '049ac648-0176-4be4-88f1-e14838e15152'
     
     const blogData = {
@@ -552,6 +809,10 @@ onMounted(() => {
       // 存储博客ID以便更新时使用
       editingBlogId.value = editingBlog.id
       
+      // 记录原始内容中的图片URL(用于对比删除)
+      originalImageUrls.value = extractImageUrls(editingBlog.content || '')
+      console.log('原始图片URL:', originalImageUrls.value)
+      
       // 清除 localStorage 中的编辑数据
       localStorage.removeItem('editingBlog')
       
@@ -574,6 +835,12 @@ onBeforeUnmount(() => {
     clearTimeout(autoSaveTimer)
   }
   window.removeEventListener('beforeunload', handleBeforeUnload)
+  
+  // 清理所有未上传的 blob URLs,避免内存泄漏
+  pendingImages.value.forEach(({ blobUrl }) => {
+    URL.revokeObjectURL(blobUrl)
+  })
+  pendingImages.value = []
 })
 
 // 页面关闭前提示
@@ -1075,8 +1342,8 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
   opacity: 0.7;
 }
 
-/* 行内代码 */
-.preview-body :deep(code) {
+/* 行内代码（非代码块中的） */
+.preview-body :deep(code:not(pre code)) {
   background: #161b22;
   border: 1px solid #30363d;
   padding: 0.2rem 0.4rem;
@@ -1086,22 +1353,26 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
   color: #ff7b72;
 }
 
-/* 代码块 */
+/* 代码块完全由 highlight.js 控制，这里只设置基本的间距 */
 .preview-body :deep(pre) {
-  background: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-  overflow-x: auto;
   margin: 1rem 0;
+  overflow-x: auto;
 }
 
-.preview-body :deep(pre code) {
-  background: transparent;
-  border: none;
-  padding: 0;
-  color: #c9d1d9;
-  font-size: 0.9rem;
+/* 图片 */
+.preview-body :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  margin: 1rem 0;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.preview-body :deep(img:hover) {
+  border-color: #58a6ff;
+  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
 }
 
 /* 链接 */
@@ -1275,5 +1546,132 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 .preview-content::-webkit-scrollbar-thumb:hover,
 .content-textarea::-webkit-scrollbar-thumb:hover {
   background: #484f58;
+}
+
+/* 图片上传弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(1, 4, 9, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #c9d1d9;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-header svg {
+  color: #58a6ff;
+}
+
+.modal-close {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #30363d;
+  color: #c9d1d9;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.image-alt-input {
+  margin-top: 1.5rem;
+}
+
+.image-alt-input label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #c9d1d9;
+}
+
+.alt-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.alt-input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+.alt-input::placeholder {
+  color: #8b949e;
 }
 </style>

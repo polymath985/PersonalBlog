@@ -131,9 +131,15 @@
           </button>
         </div>
 
-        <div class="author-card">
+        <div class="author-card" @click="goToAuthorProfile" :class="{ 'clickable': blog.authorId }">
           <div class="author-avatar">
-            <svg width="48" height="48" viewBox="0 0 16 16">
+            <img 
+              v-if="blog.authorAvatar" 
+              :src="blog.authorAvatar" 
+              :alt="blog.authorName"
+              class="avatar-image"
+            />
+            <svg v-else width="48" height="48" viewBox="0 0 16 16">
               <path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z" fill="currentColor"/>
             </svg>
           </div>
@@ -141,6 +147,9 @@
             <h4>作者</h4>
             <p>{{ blog.authorName || '未知作者' }}</p>
           </div>
+          <svg class="arrow-icon" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z" fill="currentColor"/>
+          </svg>
         </div>
       </footer>
 
@@ -302,6 +311,21 @@ const currentUserId = ref<string>('')
 // LocalStorage 键名
 const LIKED_BLOGS_KEY = 'likedBlogs'
 
+// 组件挂载时加载数据
+onMounted(async () => {
+  // 获取当前用户ID
+  const user = getCurrentUser()
+  if (user) {
+    currentUserId.value = user.id
+  }
+  
+  // 加载博客
+  await loadBlog()
+  
+  // 加载评论
+  await loadComments()
+})
+
 // 判断当前用户是否是文章作者
 const isAuthor = computed(() => {
   if (!blog.value || !currentUserId.value) return false
@@ -433,9 +457,12 @@ const renderContent = (content: string): string => {
     const rawHtml = marked.parse(content) as string
     
     // 使用 DOMPurify 净化 HTML，防止 XSS 攻击
+    // 对于代码高亮，我们需要保留所有 span 标签和 class 属性
     const cleanHtml = DOMPurify.sanitize(rawHtml, {
       ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'div', 'span'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title']
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'title', 'style'],
+      // 允许所有以 hljs- 或 language- 开头的 class
+      ALLOW_DATA_ATTR: false
     })
     
     return cleanHtml
@@ -522,6 +549,21 @@ const editBlog = () => {
   
   // 跳转到创建/编辑页面
   router.push('/blog/create')
+}
+
+// 跳转到作者个人资料页面
+const goToAuthorProfile = () => {
+  if (!blog.value || !blog.value.authorId) return
+  
+  const currentUserId = localStorage.getItem('userId')
+  
+  // 如果是当前用户,跳转到自己的 profile
+  if (blog.value.authorId === currentUserId) {
+    router.push('/profile')
+  } else {
+    // 否则跳转到指定用户的 profile
+    router.push(`/profile/${blog.value.authorId}`)
+  }
 }
 
 // 获取当前用户信息
@@ -678,21 +720,6 @@ const handleReplyComment = (comment: Comment) => {
 const handleCancelReply = () => {
   replyTarget.value = null
 }
-
-// 组件挂载时加载数据
-onMounted(async () => {
-  // 获取当前用户ID
-  const user = getCurrentUser()
-  if (user) {
-    currentUserId.value = user.id
-  }
-  
-  // 加载博客
-  await loadBlog()
-  
-  // 加载评论
-  await loadComments()
-})
 </script>
 
 <style scoped>
@@ -942,8 +969,8 @@ onMounted(async () => {
   font-style: italic;
 }
 
-/* 内联代码 */
-.content-wrapper :deep(code) {
+/* 内联代码（非代码块中的） */
+.content-wrapper :deep(code:not(pre code)) {
   background: #161b22;
   border: 1px solid #30363d;
   padding: 0.2rem 0.4rem;
@@ -955,7 +982,7 @@ onMounted(async () => {
 
 /* 代码块 */
 .content-wrapper :deep(pre) {
-  background: #161b22;
+  background: #161b22 !important;
   border: 1px solid #30363d;
   border-radius: 6px;
   padding: 1rem;
@@ -963,13 +990,23 @@ onMounted(async () => {
   margin: 1.5rem 0;
 }
 
+/* 代码块中的代码 - 保留 highlight.js 的样式 */
 .content-wrapper :deep(pre code) {
-  background: transparent;
+  background: transparent !important;
   border: none;
   padding: 0;
-  color: #c9d1d9;
   font-size: 0.9rem;
   line-height: 1.6;
+  /* 不设置 color，让 highlight.js 的样式生效 */
+}
+
+/* 确保 highlight.js 的 span 标签样式不被覆盖 */
+.content-wrapper :deep(pre code .hljs-keyword),
+.content-wrapper :deep(pre code .hljs-selector-tag),
+.content-wrapper :deep(pre code .hljs-literal),
+.content-wrapper :deep(pre code .hljs-section),
+.content-wrapper :deep(pre code .hljs-link) {
+  font-weight: inherit;
 }
 
 /* 标题 */
@@ -1100,9 +1137,17 @@ onMounted(async () => {
 .content-wrapper :deep(img) {
   max-width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: 8px;
   margin: 1.5rem 0;
   border: 1px solid #30363d;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.content-wrapper :deep(img:hover) {
+  border-color: #58a6ff;
+  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+  transform: scale(1.02);
 }
 
 /* 文章底部 */
@@ -1174,6 +1219,19 @@ onMounted(async () => {
   background: #0d1117;
   border: 1px solid #30363d;
   border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.author-card.clickable {
+  cursor: pointer;
+}
+
+.author-card.clickable:hover {
+  background: #161b22;
+  border-color: #58a6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
 }
 
 .author-avatar {
@@ -1184,10 +1242,29 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid #30363d;
+  transition: all 0.3s ease;
+}
+
+.author-card.clickable:hover .author-avatar {
+  border-color: #58a6ff;
+  transform: scale(1.05);
+}
+
+.author-avatar .avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .author-avatar svg {
   color: #58a6ff;
+}
+
+.author-info {
+  flex: 1;
 }
 
 .author-info h4 {
@@ -1202,6 +1279,24 @@ onMounted(async () => {
   color: #c9d1d9;
   font-size: 1.1rem;
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.author-card.clickable:hover .author-info p {
+  color: #58a6ff;
+}
+
+.arrow-icon {
+  flex-shrink: 0;
+  color: #8b949e;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.author-card.clickable:hover .arrow-icon {
+  opacity: 1;
+  color: #58a6ff;
+  transform: translateX(4px);
 }
 
 /* 评论区样式 */

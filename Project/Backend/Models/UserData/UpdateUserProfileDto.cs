@@ -1,13 +1,7 @@
 namespace Backend.Models.UserData
 {
-    public class UserDetailDto
+    public class UpdateUserProfileDto
     {
-        public required Guid Id { get; set; }
-        public required string Name { get; set; }
-        public required string Email { get; set; }
-        public DateTime RegisterTime { get; set; }
-        
-        // 用户资料字段
         public string? Avatar { get; set; }
         public string? Bio { get; set; }
         public string? Introduction { get; set; }

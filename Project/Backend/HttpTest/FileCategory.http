@@ -1,0 +1,57 @@
+### 测试文件分类上传和删除功能
+
+@baseUrl = https://localhost:7005/api/File
+
+### 1. 上传头像图片
+POST {{baseUrl}}/upload?category=avatar
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ./test-avatar.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 2. 上传博客图片
+POST {{baseUrl}}/upload?category=blog
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="blog-image.jpg"
+Content-Type: image/jpeg
+
+< ./test-blog.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 3. 上传其他文件
+POST {{baseUrl}}/upload?category=other
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="other.jpg"
+Content-Type: image/jpeg
+
+< ./test-other.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 4. 获取所有文件列表
+GET {{baseUrl}}/list
+
+### 5. 获取头像文件列表
+GET {{baseUrl}}/list?category=avatar
+
+### 6. 获取博客图片列表
+GET {{baseUrl}}/list?category=blog
+
+### 7. 删除头像文件
+# 将下面的 fileUrl 替换为实际的文件路径
+DELETE {{baseUrl}}?fileUrl=/images/avatars/20241005154114_d9626951.jpeg
+
+### 8. 删除博客图片
+# 将下面的 fileUrl 替换为实际的文件路径
+DELETE {{baseUrl}}?fileUrl=/images/blog/20241005161448_48599acc.jpeg
+
+### 9. 删除其他文件
+# 将下面的 fileUrl 替换为实际的文件路径
+DELETE {{baseUrl}}?fileUrl=/uploads/20241005161506_0c05a9a0.jpeg

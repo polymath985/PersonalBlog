@@ -60,6 +60,7 @@ namespace Backend.Controllers
                 updatedAt = blog.UpdatedAt,
                 authorId = blog.AuthorId,
                 authorName = blog.Author?.Name ?? "未知作者",
+                authorAvatar = blog.Author?.Avatar ?? "", // 返回作者头像
                 likes = blog.Likes,
                 views = blog.Views,
                 commentsCount = blog.CommentsCount
@@ -80,7 +81,7 @@ namespace Backend.Controllers
                 return NotFound("Blog not found.");
             }
             
-            // 返回包含作者名称和统计数据的博客信息
+            // 返回包含作者名称、头像和统计数据的博客信息
             var result = new
             {
                 id = blog.Id,
@@ -91,6 +92,7 @@ namespace Backend.Controllers
                 updatedAt = blog.UpdatedAt,
                 authorId = blog.AuthorId,
                 authorName = blog.Author?.Name ?? "未知作者", // 返回作者名称
+                authorAvatar = blog.Author?.Avatar ?? "", // 返回作者头像
                 likes = blog.Likes,
                 views = blog.Views,
                 commentsCount = blog.CommentsCount

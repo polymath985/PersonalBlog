@@ -1,0 +1,35 @@
+### 更新用户头像
+PUT https://localhost:7005/api/UserData/049ac648-0176-4be4-88f1-e14838e15152
+Content-Type: application/json
+
+{
+  "avatar": "https://localhost:7005/uploads/20241005_abc123.jpg"
+}
+
+###
+
+### 更新用户完整资料
+PUT https://localhost:7005/api/UserData/049ac648-0176-4be4-88f1-e14838e15152
+Content-Type: application/json
+
+{
+  "avatar": "https://localhost:7005/uploads/avatar.jpg",
+  "bio": "热爱技术 | 终身学习者 | 开源贡献者",
+  "introduction": "## 你好!\n\n我是一名全栈开发工程师。",
+  "github": "https://github.com/username",
+  "twitter": "https://twitter.com/username",
+  "website": "https://example.com",
+  "skills": "TypeScript,Vue.js,C#,.NET Core,SQL Server"
+}
+
+###
+
+### 获取用户统计
+GET https://localhost:7005/api/UserData/stats/049ac648-0176-4be4-88f1-e14838e15152
+
+###
+
+### 获取用户详情
+GET https://localhost:7005/api/UserData/test@example.com
+
+###
