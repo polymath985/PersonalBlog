@@ -69,6 +69,64 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<object>> GetBlogsByUserIdWithPaginationAsync(
+            Guid userId, 
+            [FromQuery] int pageSize = 10, 
+            [FromQuery] int page = 1,
+            [FromQuery] string sortBy = "createdAt")
+        {
+            // 构建基础查询
+            var query = _dbcontext.Blogs
+                .Include(b => b.Author)
+                .Where(b => b.AuthorId == userId);
+            
+            // 根据 sortBy 参数排序
+            query = sortBy.ToLower() switch
+            {
+                "views" => query.OrderByDescending(b => b.Views),
+                "likes" => query.OrderByDescending(b => b.Likes),
+                "comments" => query.OrderByDescending(b => b.CommentsCount),
+                _ => query.OrderByDescending(b => b.CreatedAt)
+            };
+            
+            // 获取总数
+            var totalBlogs = await query.CountAsync();
+            
+            // 分页
+            var blogList = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            
+            // 返回包含统计数据的博客列表
+            var result = new
+            {
+                blogs = blogList.Select(blog => new
+                {
+                    id = blog.Id,
+                    title = blog.Title,
+                    content = blog.Content,
+                    tags = blog.Tags,
+                    createdAt = blog.CreatedAt,
+                    updatedAt = blog.UpdatedAt,
+                    authorId = blog.AuthorId,
+                    authorName = blog.Author?.Name ?? "未知作者",
+                    authorAvatar = blog.Author?.Avatar ?? "",
+                    likes = blog.Likes,
+                    views = blog.Views,
+                    commentsCount = blog.CommentsCount,
+                    commentCount = blog.CommentsCount // 保持兼容性
+                }),
+                totalBlogs,
+                page,
+                pageSize
+            };
+            
+            Console.WriteLine($"返回用户 {userId} 的博客列表，数量: {blogList.Count}");
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<ActionResult<object>> GetBlogByIdAsync([FromQuery] Guid id)
         {

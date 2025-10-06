@@ -59,9 +59,6 @@
         <span>{{ updateTime }}</span>
       </div>
     </div>
-
-    <!-- 悬停效果的装饰边框 -->
-    <div class="hover-border"></div>
   </div>
 </template>
 
@@ -145,22 +142,16 @@ const formatNumber = (num: number): string => {
   border-radius: 12px;
   padding: 24px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
   backdrop-filter: blur(10px);
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .content-box:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px) scale(1.02);
   border-color: #1f6feb;
-  box-shadow: 
-    0 8px 25px rgba(31, 111, 235, 0.15),
-    0 4px 10px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .content-box.featured {
@@ -170,39 +161,18 @@ const formatNumber = (num: number): string => {
 
 .content-box.featured:hover {
   border-color: #a970ff;
-  box-shadow: 
-    0 8px 25px rgba(137, 87, 229, 0.2),
-    0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(137, 87, 229, 0.2);
 }
 
-/* 悬停边框效果 */
-.hover-border {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 12px;
-  padding: 1px;
-  background: linear-gradient(45deg, transparent, #1f6feb, transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+/* 悬停边框效果 - 已简化移除 */
+
+/* 卡片内部元素动画 */
+.content-box:hover .icon-container {
+  transform: rotate(-5deg) scale(1.1);
 }
 
-.content-box:hover .hover-border {
-  opacity: 0.6;
-}
-
-.hover-border::before {
-  content: '';
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  right: 1px;
-  bottom: 1px;
-  background: inherit;
-  border-radius: 11px;
+.content-box:hover .box-title {
+  transform: translateX(2px);
 }
 
 /* 头部样式 */
@@ -223,6 +193,7 @@ const formatNumber = (num: number): string => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .featured .icon-container {
@@ -248,6 +219,7 @@ const formatNumber = (num: number): string => {
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: transform 0.3s ease;
 }
 
 .box-badge {
@@ -273,6 +245,7 @@ const formatNumber = (num: number): string => {
   margin: 0 0 16px 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -293,11 +266,16 @@ const formatNumber = (num: number): string => {
   font-size: 12px;
   font-weight: 500;
   opacity: 0.9;
-  transition: opacity 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.content-box:hover .tag {
+  transform: translateY(-2px);
 }
 
 .tag:hover {
   opacity: 1;
+  transform: translateY(-3px) scale(1.05);
 }
 
 /* 统计信息样式 */
@@ -314,15 +292,20 @@ const formatNumber = (num: number): string => {
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .stat-item:hover {
-  color: #f0f6fc;
+  transform: scale(1.15);
 }
 
 .stat-item svg {
   opacity: 0.7;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover svg {
+  transform: rotate(15deg);
 }
 
 .update-time {
@@ -364,34 +347,32 @@ const formatNumber = (num: number): string => {
   }
 }
 
-/* 动画效果 */
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
+/* 增强的动画效果 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
   }
-  100% {
-    background-position: calc(200px + 100%) 0;
+  50% {
+    transform: translateY(-3px);
   }
 }
 
-.content-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
-  transition: left 0.5s;
-  pointer-events: none;
+.content-box:hover .box-badge {
+  animation: float 2s ease-in-out infinite;
 }
 
-.content-box:hover::before {
-  left: 100%;
+/* 描述文字动画 */
+.content-box:hover .box-description {
+  transform: translateX(2px);
+  transition: transform 0.3s ease;
+}
+
+/* 图标内部元素动画 */
+.box-icon {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.content-box:hover .box-icon {
+  transform: scale(1.1);
 }
 </style>

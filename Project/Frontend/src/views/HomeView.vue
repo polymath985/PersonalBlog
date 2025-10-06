@@ -39,23 +39,29 @@
 
     <!-- 主要内容区域 -->
     <main class="main-content">
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
+
+      <!-- 错误提示 -->
+      <div v-else-if="error" class="error-container">
+        <svg width="48" height="48" viewBox="0 0 16 16">
+          <path d="M2.343 13.657A8 8 0 1 1 13.657 2.343 8 8 0 0 1 2.343 13.657ZM6.03 4.97a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L6.94 8 4.97 9.97a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L8 9.06l2.03 2.03a.751.751 0 0 0 1.042-.018.751.751 0 0 0 .018-1.042L9.06 8l2.03-2.03a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L8 6.94Z" fill="currentColor"/>
+        </svg>
+        <p>{{ error }}</p>
+        <button @click="loadBlogs" class="retry-btn">重试</button>
+      </div>
+
       <!-- 内容卡片网格 -->
-      <section class="content-grid">
-        <ContentBox
-          v-for="(item, index) in contentItems"
-          :key="index"
-          :title="item.title"
-          :description="item.description"
-          :icon="item.icon"
-          :badge="item.badge"
-          :tags="item.tags"
-          :featured="item.featured"
-          :stats="item.stats"
-          :updateTime="item.updateTime"
-          :clickAction="item.clickAction"
-          @click="handleContentClick"
-        />
-      </section>
+      <ContentPage
+        v-else
+        :items="contentItems"
+        :items-per-row="1"
+        :items-per-page="5"
+        @item-click="handleItemClick"
+      />
 
       <!-- 快速操作区域 -->
       <section class="quick-actions">
@@ -82,90 +88,98 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import ContentBox from '@/components/ContentBox.vue'
+import ContentPage from '@/components/ContentPage.vue'
 
 const router = useRouter()
 
 // 统计数据
-const totalPosts = ref(42)
-const totalProjects = ref(15)
-const totalViews = ref(12800)
+const totalPosts = ref(0)
+const totalProjects = ref(0)
+const totalViews = ref(0)
 
-const WhenLogIn = () => {
-  fetch("/Hot")
+// 博客数据
+const contentItems = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
+
+// 格式化日期
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  
+  if (days === 0) return '今天'
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days}天前`
+  if (days < 30) return `${Math.floor(days / 7)}周前`
+  if (days < 365) return `${Math.floor(days / 30)}个月前`
+  return `${Math.floor(days / 365)}年前`
 }
 
-// 内容项目数据
-const contentItems = ref([
-  {
-    title: "Vue 3 进阶指南",
-    description: "深入探索Vue 3的Composition API、响应式系统和性能优化技巧，构建现代化的前端应用。",
-    icon: "code",
-    badge: "热门",
-    tags: ["Vue3", "JavaScript", "前端"],
-    featured: true,
-    stats: { views: 1250, likes: 89, comments: 23 },
-    updateTime: "2天前",
-    clickAction: () => router.push('/posts/vue3-advanced')
-  },
-  {
-    title: "全栈博客系统",
-    description: "使用Vue 3 + ASP.NET Core构建的现代化个人博客系统，包含完整的前后端实现。",
-    icon: "project",
-    badge: "项目",
-    tags: ["Vue3", "ASP.NET", "全栈"],
-    featured: false,
-    stats: { views: 890, likes: 45, comments: 12 },
-    updateTime: "5天前",
-    clickAction: () => router.push('/projects/fullstack-blog')
-  },
-  {
-    title: "TypeScript 最佳实践",
-    description: "从基础语法到高级类型，掌握TypeScript在大型项目中的应用和最佳实践模式。",
-    icon: "book",
-    badge: "教程",
-    tags: ["TypeScript", "JavaScript", "最佳实践"],
-    featured: false,
-    stats: { views: 756, likes: 67, comments: 18 },
-    updateTime: "1周前",
-    clickAction: () => router.push('/posts/typescript-best-practices')
-  },
-  {
-    title: "开源组件库",
-    description: "基于Vue 3开发的企业级组件库，提供丰富的UI组件和开箱即用的解决方案。",
-    icon: "star",
-    badge: "开源",
-    tags: ["Vue3", "组件库", "开源"],
-    featured: true,
-    stats: { views: 2100, likes: 156, comments: 34 },
-    updateTime: "3天前",
-    clickAction: () => window.open('https://github.com/username/component-library')
-  },
-  {
-    title: "微前端架构实践",
-    description: "探索微前端架构的设计原理和实施策略，在大型团队中实现前端应用的模块化开发。",
-    icon: "rocket",
-    badge: "架构",
-    tags: ["微前端", "架构", "大型项目"],
-    featured: false,
-    stats: { views: 543, likes: 38, comments: 15 },
-    updateTime: "2周前",
-    clickAction: () => router.push('/posts/micro-frontend')
-  },
-  {
-    title: "个人作品集",
-    description: "展示我的设计作品、开发项目和技术文章，记录我的成长历程和技术栈演进。",
-    icon: "portfolio",
-    badge: "作品",
-    tags: ["作品集", "设计", "开发"],
-    featured: false,
-    stats: { views: 1890, likes: 98, comments: 27 },
-    updateTime: "4天前",
-    clickAction: () => router.push('/portfolio')
+// 格式化数字
+const formatNumber = (num: number): string => {
+  if (num >= 10000) {
+    return (num / 10000).toFixed(1) + 'w'
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'k'
   }
-])
+  return num.toString()
+}
+
+// 加载博客数据
+const loadBlogs = async () => {
+  loading.value = true
+  error.value = ''
+  
+  try {
+    // 获取所有博客
+    const response = await fetch(`/api/Blog/all`)
+    
+    if (!response.ok) {
+      throw new Error('获取博客列表失败')
+    }
+    
+    const blogs = await response.json()
+    
+    // 按浏览量降序排序
+    const sortedBlogs = blogs.sort((a: any, b: any) => b.views - a.views)
+    
+    // 更新统计数据
+    totalPosts.value = sortedBlogs.length
+    totalViews.value = sortedBlogs.reduce((sum: number, blog: any) => sum + blog.views, 0)
+    
+    // 转换为 ContentPage 需要的格式 - 传入所有数据,让 ContentPage 自动处理分页
+    contentItems.value = sortedBlogs.map((blog: any, index: number) => ({
+      id: blog.id,
+      title: blog.title,
+      description: blog.content.substring(0, 120) + '...',
+      icon: 'book',
+      badge: index < 3 ? '热门' : undefined,
+      tags: blog.tags ? blog.tags.split(',').slice(0, 3).map((t: string) => t.trim()) : [],
+      featured: index < 2, // 前两个设置为 featured
+      stats: {
+        views: blog.views,
+        likes: blog.likes,
+        comments: blog.commentsCount
+      },
+      updateTime: formatDate(blog.createdAt)
+    }))
+    
+  } catch (err) {
+    console.error('加载博客失败:', err)
+    error.value = err instanceof Error ? err.message : '加载失败，请稍后重试'
+  } finally {
+    loading.value = false
+  }
+}
+
+// 处理项目点击
+const handleItemClick = (item: any) => {
+  router.push(`/blog/${item.id}`)
+}
 
 // 快速操作数据
 const quickActions = ref([
@@ -173,25 +187,25 @@ const quickActions = ref([
     title: "写新文章",
     description: "分享你的技术见解",
     icon: "edit",
-    action: () => router.push('/write')
+    action: () => router.push('/blog/create')
   },
   {
-    title: "管理项目",
-    description: "查看和编辑项目",
+    title: "个人资料",
+    description: "查看和编辑资料",
     icon: "folder",
-    action: () => router.push('/projects')
+    action: () => router.push('/profile')
   },
   {
-    title: "查看统计",
-    description: "分析网站数据",
+    title: "浏览文章",
+    description: "查看所有博客",
     icon: "chart",
-    action: () => router.push('/analytics')
+    action: () => router.push('/blogs')
   },
   {
-    title: "设置中心",
-    description: "个性化你的博客",
+    title: "关于我",
+    description: "了解更多信息",
     icon: "settings",
-    action: () => router.push('/settings')
+    action: () => router.push('/about')
   }
 ])
 
@@ -215,21 +229,15 @@ const getFloatingStyle = (index: number) => {
   }
 }
 
-// 处理内容点击
-const handleContentClick = (action: string | (() => void) | undefined) => {
-  console.log('Content clicked:', action)
-  if (typeof action === 'function') {
-    action()
-  } else if (typeof action === 'string') {
-    router.push(action)
-  }
-}
-
 // 处理快速操作点击
 const handleActionClick = (action: () => void) => {
-  console.log('Action clicked')
   action()
 }
+
+// 组件挂载时加载数据
+onMounted(() => {
+  loadBlogs()
+})
 
 // 获取操作图标
 const getActionIcon = (iconName: string): string => {
@@ -396,17 +404,55 @@ const getActionIcon = (iconName: string): string => {
 
 /* 主要内容区域 */
 .main-content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 4rem 2rem;
 }
 
-/* 内容网格 */
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  margin-bottom: 4rem;
+/* 加载状态 */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #c9d1d9;
+  gap: 1.5rem;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #30363d;
+  border-top-color: #58a6ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-container svg {
+  color: #f85149;
+}
+
+.retry-btn {
+  padding: 0.75rem 1.5rem;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #30363d;
+  border-color: #58a6ff;
+  color: #58a6ff;
 }
 
 /* 快速操作区域 */

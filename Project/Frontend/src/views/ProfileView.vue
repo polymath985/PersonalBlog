@@ -39,7 +39,7 @@
             <p class="bio">{{ userProfile.bio || '这个人很懒，什么都没写...' }}</p>
           </div>
           
-          <button v-if="isOwnProfile" class="edit-profile-btn">
+          <button v-if="isOwnProfile" @click="openEditProfileModal" class="edit-profile-btn">
             <svg width="16" height="16" viewBox="0 0 16 16">
               <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z" fill="currentColor"/>
             </svg>
@@ -240,34 +240,18 @@
             </h2>
           </div>
           
-          <div class="blog-list">
-            <div v-for="blog in popularBlogs" :key="blog.id" class="blog-item" @click="goToBlog(blog.id)">
-              <div class="blog-header">
-                <h3 class="blog-title">{{ blog.title }}</h3>
-                <span class="blog-date">{{ formatDate(blog.publishedAt) }}</span>
-              </div>
-              <p class="blog-excerpt">{{ blog.excerpt }}</p>
-              <div class="blog-meta">
-                <span class="meta-item">
-                  <svg width="14" height="14" viewBox="0 0 16 16">
-                    <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/>
-                    <path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 0 1 0 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.69 1.679 8.068a.119.119 0 0 1 0-.136Z" fill="currentColor"/>
-                  </svg>
-                  {{ formatNumber(blog.views) }}
-                </span>
-                <span class="meta-item">
-                  <svg width="14" height="14" viewBox="0 0 16 16">
-                    <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Z" fill="currentColor"/>
-                  </svg>
-                  {{ blog.commentCount }}
-                </span>
-                <div class="blog-tags">
-                  <span v-for="tag in blog.tags.split(',').slice(0, 2)" :key="tag" class="blog-tag">
-                    {{ tag.trim() }}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <!-- 使用 ContentPage 组件展示热门文章 -->
+          <ContentPage
+            v-if="popularBlogItems.length > 0"
+            :items="popularBlogItems"
+            :items-per-row="1"
+            :items-per-page="3"
+            @item-click="goToBlog"
+          />
+          
+          <!-- 空状态 -->
+          <div v-else class="empty-blogs">
+            <p>暂无文章</p>
           </div>
         </section>
       </main>
@@ -321,6 +305,150 @@
         </div>
       </div>
     </div>
+
+    <!-- 编辑资料弹窗 -->
+    <div v-if="showEditProfileModal" class="modal-overlay" @click="showEditProfileModal = false">
+      <div class="modal-content edit-profile-modal" @click.stop>
+        <div class="modal-header">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 16 16">
+              <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z" fill="currentColor"/>
+            </svg>
+            编辑资料
+          </h3>
+          <button @click="showEditProfileModal = false" class="modal-close">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body edit-form">
+          <div class="form-group">
+            <label for="name">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M10.5 5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm.061 3.073a4 4 0 1 0-5.123 0 6.004 6.004 0 0 0-3.431 5.142.75.75 0 0 0 1.498.07 4.5 4.5 0 0 1 8.99 0 .75.75 0 0 0 1.498-.07 6.005 6.005 0 0 0-3.432-5.142Z" fill="currentColor"/>
+              </svg>
+              昵称
+            </label>
+            <input 
+              id="name"
+              v-model="editForm.name" 
+              type="text" 
+              placeholder="请输入昵称"
+              maxlength="50"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="bio">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Z" fill="currentColor"/>
+              </svg>
+              个性签名
+            </label>
+            <input 
+              id="bio"
+              v-model="editForm.bio" 
+              type="text" 
+              placeholder="一句话介绍自己"
+              maxlength="200"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="introduction">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M0 1.75C0 .784.784 0 1.75 0h8.5C10.216 0 11 .784 11 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 0 0 .25-.25V8.285a.25.25 0 0 0-.111-.208l-1.055-.703a.749.749 0 1 1 .832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0 1 13.25 16h-3.5a.766.766 0 0 1-.197-.026c-.099.017-.2.026-.303.026h-3a.766.766 0 0 1-.197-.026c-.099.017-.2.026-.303.026h-3A1.75 1.75 0 0 1 0 14.25V1.75Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25V13h-1a.75.75 0 0 1 0-1.5h1V9.25a.75.75 0 0 1 1.5 0v2.25h2V4.5a.5.5 0 0 1 1 0v7h2.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5Z" fill="currentColor"/>
+              </svg>
+              个人简介
+            </label>
+            <textarea 
+              id="introduction"
+              v-model="editForm.introduction" 
+              placeholder="详细介绍你自己（支持 Markdown）"
+              rows="6"
+              maxlength="5000"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z" fill="currentColor"/>
+              </svg>
+              技能标签
+            </label>
+            <input 
+              id="skills"
+              v-model="editForm.skills" 
+              type="text" 
+              placeholder="用逗号分隔，如: Vue.js, TypeScript, Node.js"
+              maxlength="500"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="github">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" fill="currentColor"/>
+              </svg>
+              GitHub
+            </label>
+            <input 
+              id="github"
+              v-model="editForm.github" 
+              type="url" 
+              placeholder="https://github.com/username"
+              maxlength="200"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z" fill="currentColor"/>
+              </svg>
+              Twitter/X
+            </label>
+            <input 
+              id="twitter"
+              v-model="editForm.twitter" 
+              type="url" 
+              placeholder="https://twitter.com/username"
+              maxlength="200"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="website">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z" fill="currentColor"/>
+              </svg>
+              个人网站
+            </label>
+            <input 
+              id="website"
+              v-model="editForm.website" 
+              type="url" 
+              placeholder="https://your-website.com"
+              maxlength="200"
+            />
+          </div>
+
+          <button 
+            @click="saveProfile" 
+            class="save-btn"
+            :disabled="saving"
+          >
+            <svg v-if="!saving" width="16" height="16" viewBox="0 0 16 16">
+              <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" fill="currentColor"/>
+            </svg>
+            <span v-if="saving" class="spinner"></span>
+            {{ saving ? '保存中...' : '保存更改' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -330,6 +458,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import ImageUpload from '@/components/ImageUpload.vue'
+import ContentPage from '@/components/ContentPage.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -351,6 +480,19 @@ const hasSelectedAvatar = ref(false)
 const uploading = ref(false)
 const selectedAvatarFile = ref<File | null>(null)
 const selectedAvatarBlobUrl = ref('')
+
+// 编辑资料相关
+const showEditProfileModal = ref(false)
+const editForm = ref({
+  name: '',
+  bio: '',
+  introduction: '',
+  github: '',
+  twitter: '',
+  website: '',
+  skills: ''
+})
+const saving = ref(false)
 
 // 用户资料
 const userProfile = ref({
@@ -441,6 +583,23 @@ const generateContributions = () => {
 // 热门文章
 const popularBlogs = ref<any[]>([])
 
+// 转换为 ContentPage 需要的格式
+const popularBlogItems = computed(() => {
+  return popularBlogs.value.map(blog => ({
+    id: blog.id,
+    title: blog.title,
+    description: blog.content.substring(0, 120) + '...',
+    icon: 'book',
+    tags: blog.tags ? blog.tags.split(',').slice(0, 3).map((t: string) => t.trim()) : [],
+    stats: {
+      views: blog.views,
+      likes: blog.likes,
+      comments: blog.commentsCount
+    },
+    updateTime: formatDate(blog.createdAt)
+  }))
+})
+
 // 格式化数字
 const formatNumber = (num: number): string => {
   if (num >= 10000) {
@@ -483,7 +642,8 @@ const renderMarkdown = (content: string): string => {
 }
 
 // 跳转到博客详情
-const goToBlog = (blogId: string) => {
+const goToBlog = (item: any) => {
+  const blogId = typeof item === 'string' ? item : item.id
   router.push(`/blog/${blogId}`)
 }
 
@@ -493,6 +653,61 @@ const openAvatarUploadModal = () => {
   hasSelectedAvatar.value = false
   selectedAvatarFile.value = null
   selectedAvatarBlobUrl.value = ''
+}
+
+// 打开编辑资料弹窗
+const openEditProfileModal = () => {
+  // 将当前资料填充到表单
+  editForm.value = {
+    name: userProfile.value.name,
+    bio: userProfile.value.bio,
+    introduction: userProfile.value.introduction,
+    github: userProfile.value.github,
+    twitter: userProfile.value.twitter,
+    website: userProfile.value.website,
+    skills: userProfile.value.skills
+  }
+  showEditProfileModal.value = true
+}
+
+// 保存资料
+const saveProfile = async () => {
+  saving.value = true
+  
+  try {
+    const userId = userProfile.value.id
+    const updateResponse = await fetch(`/api/UserData/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(editForm.value)
+    })
+    
+    if (!updateResponse.ok) {
+      throw new Error('更新资料失败')
+    }
+    
+    // 更新本地数据
+    userProfile.value = {
+      ...userProfile.value,
+      ...editForm.value
+    }
+    
+    // 更新 localStorage
+    localStorage.setItem('userProfile', JSON.stringify(userProfile.value))
+    
+    // 关闭弹窗
+    showEditProfileModal.value = false
+    
+    alert('资料更新成功!')
+    
+  } catch (error) {
+    console.error('保存资料失败:', error)
+    alert(error instanceof Error ? error.message : '保存失败,请重试')
+  } finally {
+    saving.value = false
+  }
 }
 
 // 处理头像文件选择
@@ -1215,97 +1430,18 @@ onMounted(() => {
   border-radius: 2px;
 }
 
-/* 热门文章 */
+/* 热门文章 - 使用 ContentPage 组件 */
 .blog-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.blog-item {
-  padding: 1.5rem;
-  background: rgba(13, 17, 23, 0.6);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.blog-item:hover {
-  background: rgba(88, 166, 255, 0.05);
-  border-color: #58a6ff;
-  transform: translateX(5px);
-}
-
-.blog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.blog-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #c9d1d9;
-  margin: 0;
-  flex: 1;
-}
-
-.blog-item:hover .blog-title {
-  color: #58a6ff;
-}
-
-.blog-date {
-  font-size: 0.875rem;
-  color: #8b949e;
-  white-space: nowrap;
-}
-
-.blog-excerpt {
+.empty-blogs {
+  padding: 3rem;
+  text-align: center;
   color: #8b949e;
   font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0 0 1rem 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.blog-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: #8b949e;
-  font-size: 0.875rem;
-}
-
-.meta-item svg {
-  flex-shrink: 0;
-}
-
-.blog-tags {
-  display: flex;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.blog-tag {
-  padding: 0.25rem 0.75rem;
-  background: rgba(88, 166, 255, 0.1);
-  border-radius: 12px;
-  color: #58a6ff;
-  font-size: 0.8rem;
 }
 
 /* 响应式 */
@@ -1478,6 +1614,95 @@ onMounted(() => {
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
+}
+
+/* ========== 编辑资料模态框 ========== */
+.edit-profile-modal {
+  max-width: 600px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.form-group label svg {
+  color: #58a6ff;
+  flex-shrink: 0;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem 1rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #6e7681;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(88, 166, 255, 0.4);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @keyframes fadeIn {

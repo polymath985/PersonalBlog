@@ -86,33 +86,23 @@
 
     <!-- 文章列表 -->
     <main v-else class="blog-list">
-      <TransitionGroup name="blog-list" tag="div" class="blog-grid">
-        <ContentBox
-          v-for="blog in filteredBlogs"
-          :key="blog.id"
-          :title="blog.title"
-          :description="getExcerpt(blog.content)"
-          :icon="'book'"
-          :tags="parseTags(blog.tags)"
-          :stats="{
-            views: blog.views || 0,
-            likes: blog.likes || 0,
-            comments: blog.commentsCount || 0
-          }"
-          :updateTime="formatDate(blog.updatedAt || blog.createdAt)"
-          :featured="false"
-          @click="() => viewBlog(blog.id)"
-        />
-      </TransitionGroup>
-
       <!-- 空状态 -->
-      <div v-if="filteredBlogs.length === 0" class="empty-state">
+      <div v-if="contentItems.length === 0" class="empty-state">
         <svg width="64" height="64" viewBox="0 0 16 16">
           <path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5L5.625 1.8a.75.75 0 0 0-.375-.1H1.75Z" fill="currentColor" opacity="0.3"/>
         </svg>
         <h3>暂无文章</h3>
         <p>{{ searchQuery || selectedTag !== 'All' ? '没有找到符合条件的文章' : '还没有发布任何文章' }}</p>
       </div>
+
+      <!-- 使用 ContentPage 组件展示文章 -->
+      <ContentPage
+        v-else
+        :items="contentItems"
+        :items-per-row="3"
+        :items-per-page="9"
+        @item-click="handleItemClick"
+      />
     </main>
   </div>
 </template>
@@ -120,7 +110,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import ContentBox from '@/components/ContentBox.vue'
+import ContentPage from '@/components/ContentPage.vue'
 
 const router = useRouter()
 
@@ -207,6 +197,23 @@ const filteredBlogs = computed(() => {
   return filtered
 })
 
+// 转换为 ContentPage 需要的格式
+const contentItems = computed(() => {
+  return filteredBlogs.value.map(blog => ({
+    id: blog.id,
+    title: blog.title,
+    description: getExcerpt(blog.content),
+    icon: 'book',
+    tags: parseTags(blog.tags),
+    stats: {
+      views: blog.views || 0,
+      likes: blog.likes || 0,
+      comments: blog.commentsCount || 0
+    },
+    updateTime: formatDate(blog.updatedAt || blog.createdAt)
+  }))
+})
+
 // 解析标签
 const parseTags = (tags: string): string[] => {
   if (!tags) return []
@@ -254,6 +261,11 @@ const filterByTag = (tag: string) => {
 // 查看博客详情
 const viewBlog = async (blogId: string) => {
   router.push(`/blog/${blogId}`)
+}
+
+// 处理 ContentPage 的点击事件
+const handleItemClick = (item: any) => {
+  router.push(`/blog/${item.id}`)
 }
 
 // 创建博客

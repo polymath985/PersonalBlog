@@ -64,6 +64,7 @@
             </div>
             <div class="dropdown-divider"></div>
             <a href="/profile" class="dropdown-item">个人资料</a>
+            <a href="/manage" class="dropdown-item">管理内容</a>
             <a href="/settings" class="dropdown-item">设置</a>
             <div class="dropdown-divider"></div>
             <a href="/logout" class="dropdown-item">退出登录</a>
