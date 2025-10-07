@@ -39,6 +39,7 @@
 
     <!-- 主要内容区域 -->
     <main class="main-content">
+<<<<<<< HEAD
       <!-- 加载状态 -->
       <div v-if="loading" class="loading-container">
         <div class="loading-spinner"></div>
@@ -55,13 +56,66 @@
       </div>
 
       <!-- 内容卡片网格 -->
+=======
+<<<<<<< Updated upstream
+      <!-- 内容卡片网格 -->
+      <section class="content-grid">
+        <ContentBox
+          v-for="(item, index) in contentItems"
+          :key="index"
+          :title="item.title"
+          :description="item.description"
+          :icon="item.icon"
+          :badge="item.badge"
+          :tags="item.tags"
+          :featured="item.featured"
+          :stats="item.stats"
+          :updateTime="item.updateTime"
+          :clickAction="item.clickAction"
+          @click="handleContentClick"
+        />
+      </section>
+=======
+      <!-- 排序选择器 -->
+      <div v-if="!loading && !error" class="content-header">
+        <h2 class="section-title">{{ sectionTitle }}</h2>
+        <CustomSelect 
+          v-model="sortBy"
+          :options="sortOptions"
+        />
+      </div>
+      
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
+
+      <!-- 错误提示 -->
+      <div v-else-if="error" class="error-container">
+        <svg width="48" height="48" viewBox="0 0 16 16">
+          <path d="M2.343 13.657A8 8 0 1 1 13.657 2.343 8 8 0 0 1 2.343 13.657ZM6.03 4.97a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L6.94 8 4.97 9.97a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L8 9.06l2.03 2.03a.751.751 0 0 0 1.042-.018.751.751 0 0 0 .018-1.042L9.06 8l2.03-2.03a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L8 6.94Z" fill="currentColor"/>
+        </svg>
+        <p>{{ error }}</p>
+        <button @click="loadBlogs" class="retry-btn">重试</button>
+      </div>
+
+      <!-- 内容卡片网格 -->
+>>>>>>> dev
       <ContentPage
         v-else
         :items="contentItems"
         :items-per-row="1"
         :items-per-page="5"
+<<<<<<< HEAD
         @item-click="handleItemClick"
       />
+=======
+        :sort-by="sortBy"
+        @item-click="handleItemClick"
+      />
+>>>>>>> Stashed changes
+>>>>>>> dev
 
       <!-- 快速操作区域 -->
       <section class="quick-actions">
@@ -88,9 +142,22 @@
 </template>
 
 <script setup lang="ts">
+<<<<<<< HEAD
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ContentPage from '@/components/ContentPage.vue'
+=======
+<<<<<<< Updated upstream
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import ContentBox from '@/components/ContentBox.vue'
+=======
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import ContentPage from '@/components/ContentPage.vue'
+import CustomSelect from '@/components/CustomSelect.vue'
+>>>>>>> Stashed changes
+>>>>>>> dev
 
 const router = useRouter()
 
@@ -99,10 +166,52 @@ const totalPosts = ref(0)
 const totalProjects = ref(0)
 const totalViews = ref(0)
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+const WhenLogIn = () => {
+  fetch("/Hot")
+=======
+>>>>>>> dev
 // 博客数据
 const contentItems = ref<any[]>([])
 const loading = ref(true)
 const error = ref('')
+<<<<<<< HEAD
+=======
+const sortBy = ref<'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'>('time-desc')
+
+// 排序选项
+const sortOptions = [
+  { label: '最新发布', value: 'time-desc' },
+  { label: '最多浏览', value: 'views-desc' },
+  { label: '最多点赞', value: 'likes-desc' }
+]
+
+// 根据排序方式动态生成标题
+const sectionTitle = computed(() => {
+  switch (sortBy.value) {
+    case 'time-desc':
+      return '最新文章'
+    case 'time-asc':
+      return '最早文章'
+    case 'views-desc':
+      return '最多浏览'
+    case 'views-asc':
+      return '最少浏览'
+    case 'likes-desc':
+      return '最多点赞'
+    case 'likes-asc':
+      return '最少点赞'
+    case 'comments-desc':
+      return '最多评论'
+    case 'comments-asc':
+      return '最少评论'
+    default:
+      return '文章'
+  }
+})
+>>>>>>> dev
 
 // 格式化日期
 const formatDate = (dateString: string): string => {
@@ -117,6 +226,10 @@ const formatDate = (dateString: string): string => {
   if (days < 30) return `${Math.floor(days / 7)}周前`
   if (days < 365) return `${Math.floor(days / 30)}个月前`
   return `${Math.floor(days / 365)}年前`
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> dev
 }
 
 // 格式化数字
@@ -126,6 +239,12 @@ const formatNumber = (num: number): string => {
   } else if (num >= 1000) {
     return (num / 1000).toFixed(1) + 'k'
   }
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+])
+=======
+>>>>>>> dev
   return num.toString()
 }
 
@@ -165,7 +284,16 @@ const loadBlogs = async () => {
         likes: blog.likes,
         comments: blog.commentsCount
       },
+<<<<<<< HEAD
       updateTime: formatDate(blog.createdAt)
+=======
+      updateTime: blog.createdAt, // 保留原始日期字符串用于排序
+      author: blog.authorId ? {
+        id: blog.authorId,
+        name: blog.authorName || '未知作者',
+        avatar: blog.authorAvatar
+      } : undefined
+>>>>>>> dev
     }))
     
   } catch (err) {
@@ -180,6 +308,10 @@ const loadBlogs = async () => {
 const handleItemClick = (item: any) => {
   router.push(`/blog/${item.id}`)
 }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> dev
 
 // 快速操作数据
 const quickActions = ref([
@@ -409,6 +541,33 @@ const getActionIcon = (iconName: string): string => {
   padding: 4rem 2rem;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+/* 内容网格 */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+=======
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f0f6fc;
+  margin: 0;
+}
+
+>>>>>>> dev
 /* 加载状态 */
 .loading-container,
 .error-container {
@@ -453,6 +612,10 @@ const getActionIcon = (iconName: string): string => {
   background: #30363d;
   border-color: #58a6ff;
   color: #58a6ff;
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> dev
 }
 
 /* 快速操作区域 */

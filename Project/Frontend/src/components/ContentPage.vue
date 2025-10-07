@@ -13,6 +13,10 @@
         :featured="item.featured"
         :stats="item.stats"
         :update-time="item.updateTime"
+<<<<<<< HEAD
+=======
+        :author="item.author"
+>>>>>>> dev
         @click="handleItemClick(item)"
       />
     </div>
@@ -61,6 +65,15 @@
 import { ref, computed } from 'vue'
 import ContentBox from './ContentBox.vue'
 
+<<<<<<< HEAD
+=======
+interface Author {
+  id: string
+  name: string
+  avatar?: string
+}
+
+>>>>>>> dev
 interface ContentItem {
   id: string
   title: string
@@ -76,17 +89,34 @@ interface ContentItem {
   }
   updateTime?: string
   clickAction?: string | (() => void)
+<<<<<<< HEAD
 }
 
+=======
+  author?: Author
+}
+
+type SortBy = 'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'
+
+>>>>>>> dev
 interface Props {
   items: ContentItem[]
   itemsPerRow?: number
   itemsPerPage?: number
+<<<<<<< HEAD
+=======
+  sortBy?: SortBy
+>>>>>>> dev
 }
 
 const props = withDefaults(defineProps<Props>(), {
   itemsPerRow: 3,
+<<<<<<< HEAD
   itemsPerPage: 10
+=======
+  itemsPerPage: 10,
+  sortBy: 'none'
+>>>>>>> dev
 })
 
 const emit = defineEmits<{
@@ -96,16 +126,104 @@ const emit = defineEmits<{
 // 当前页码
 const currentPage = ref(1)
 
+<<<<<<< HEAD
 // 计算总页数
 const totalPages = computed(() => {
   return Math.ceil(props.items.length / props.itemsPerPage)
+=======
+// 排序后的数据
+const sortedItems = computed(() => {
+  if (props.sortBy === 'none') {
+    return props.items
+  }
+
+  const itemsCopy = [...props.items]
+  
+  switch (props.sortBy) {
+    case 'time-desc':
+      // 按时间降序（最新的在前）
+      return itemsCopy.sort((a, b) => {
+        const timeA = a.updateTime ? new Date(a.updateTime).getTime() : 0
+        const timeB = b.updateTime ? new Date(b.updateTime).getTime() : 0
+        return timeB - timeA
+      })
+      
+    case 'time-asc':
+      // 按时间升序（最旧的在前）
+      return itemsCopy.sort((a, b) => {
+        const timeA = a.updateTime ? new Date(a.updateTime).getTime() : 0
+        const timeB = b.updateTime ? new Date(b.updateTime).getTime() : 0
+        return timeA - timeB
+      })
+      
+    case 'views-desc':
+      // 按浏览量降序（热度高的在前）
+      return itemsCopy.sort((a, b) => {
+        const viewsA = a.stats?.views || 0
+        const viewsB = b.stats?.views || 0
+        return viewsB - viewsA
+      })
+      
+    case 'views-asc':
+      // 按浏览量升序
+      return itemsCopy.sort((a, b) => {
+        const viewsA = a.stats?.views || 0
+        const viewsB = b.stats?.views || 0
+        return viewsA - viewsB
+      })
+      
+    case 'likes-desc':
+      // 按点赞数降序（最受欢迎的在前）
+      return itemsCopy.sort((a, b) => {
+        const likesA = a.stats?.likes || 0
+        const likesB = b.stats?.likes || 0
+        return likesB - likesA
+      })
+      
+    case 'likes-asc':
+      // 按点赞数升序
+      return itemsCopy.sort((a, b) => {
+        const likesA = a.stats?.likes || 0
+        const likesB = b.stats?.likes || 0
+        return likesA - likesB
+      })
+      
+    case 'comments-desc':
+      // 按评论数降序（讨论最多的在前）
+      return itemsCopy.sort((a, b) => {
+        const commentsA = a.stats?.comments || 0
+        const commentsB = b.stats?.comments || 0
+        return commentsB - commentsA
+      })
+      
+    case 'comments-asc':
+      // 按评论数升序
+      return itemsCopy.sort((a, b) => {
+        const commentsA = a.stats?.comments || 0
+        const commentsB = b.stats?.comments || 0
+        return commentsA - commentsB
+      })
+      
+    default:
+      return itemsCopy
+  }
+})
+
+// 计算总页数
+const totalPages = computed(() => {
+  return Math.ceil(sortedItems.value.length / props.itemsPerPage)
+>>>>>>> dev
 })
 
 // 当前页显示的数据
 const paginatedItems = computed(() => {
   const start = (currentPage.value - 1) * props.itemsPerPage
   const end = start + props.itemsPerPage
+<<<<<<< HEAD
   return props.items.slice(start, end)
+=======
+  return sortedItems.value.slice(start, end)
+>>>>>>> dev
 })
 
 // 计算可见的页码

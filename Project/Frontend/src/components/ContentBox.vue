@@ -4,6 +4,20 @@
     :class="{ 'featured': featured }"
     @click="handleClick"
   >
+    <!-- 作者信息 (右上角) -->
+    <div 
+      v-if="author" 
+      class="author-info"
+      @click.stop="handleAuthorClick"
+    >
+      <img 
+        :src="author.avatar || '/default-avatar.png'" 
+        :alt="author.name"
+        class="author-avatar"
+      />
+      <span class="author-name">{{ author.name }}</span>
+    </div>
+
     <!-- 头部图标和标题 -->
     <div class="box-header">
       <div class="icon-container">
@@ -56,7 +70,7 @@
         <svg width="16" height="16" viewBox="0 0 16 16">
           <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z" fill="currentColor"/>
         </svg>
-        <span>{{ updateTime }}</span>
+        <span>{{ formattedTime }}</span>
       </div>
     </div>
   </div>
@@ -64,6 +78,16 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 定义作者接口
+interface Author {
+  id: string
+  name: string
+  avatar?: string
+}
 
 // 定义 props
 interface Props {
@@ -80,6 +104,7 @@ interface Props {
   }
   updateTime?: string
   clickAction?: string | (() => void)
+  author?: Author
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -90,11 +115,20 @@ const props = withDefaults(defineProps<Props>(), {
 // 定义事件
 const emit = defineEmits<{
   click: [action: string | (() => void) | undefined]
+  authorClick: [authorId: string]
 }>()
 
 // 处理点击事件
 const handleClick = () => {
   emit('click', props.clickAction)
+}
+
+// 处理作者点击事件
+const handleAuthorClick = () => {
+  if (props.author) {
+    emit('authorClick', props.author.id)
+    router.push(`/profile/${props.author.id}`)
+  }
 }
 
 // 获取图标路径
@@ -132,6 +166,23 @@ const formatNumber = (num: number): string => {
   }
   return num.toString()
 }
+
+// 格式化时间
+const formattedTime = computed(() => {
+  if (!props.updateTime) return ''
+  
+  const date = new Date(props.updateTime)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  
+  if (days === 0) return '今天'
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days}天前`
+  if (days < 30) return `${Math.floor(days / 7)}周前`
+  if (days < 365) return `${Math.floor(days / 30)}个月前`
+  return `${Math.floor(days / 365)}年前`
+})
 </script>
 
 <style scoped>
@@ -164,11 +215,86 @@ const formatNumber = (num: number): string => {
   box-shadow: 0 4px 8px rgba(137, 87, 229, 0.2);
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+/* 悬停边框效果 */
+.hover-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(45deg, transparent, #1f6feb, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+=======
+/* 作者信息样式 */
+.author-info {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(13, 17, 23, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid #30363d;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+}
+
+.author-info:hover {
+  background: rgba(31, 111, 235, 0.15);
+  border-color: #1f6feb;
+  transform: scale(1.05);
+}
+
+.author-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #30363d;
+  transition: all 0.3s ease;
+}
+
+.author-info:hover .author-avatar {
+  border-color: #1f6feb;
+  transform: rotate(360deg);
+}
+
+.author-name {
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.author-info:hover .author-name {
+  color: #f0f6fc;
+}
+
+>>>>>>> dev
 /* 悬停边框效果 - 已简化移除 */
 
 /* 卡片内部元素动画 */
 .content-box:hover .icon-container {
   transform: rotate(-5deg) scale(1.1);
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> dev
 }
 
 .content-box:hover .box-title {
@@ -319,8 +445,26 @@ const formatNumber = (num: number): string => {
     padding: 20px;
   }
   
+  .author-info {
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  
+  .author-avatar {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .author-name {
+    font-size: 11px;
+    max-width: 60px;
+  }
+  
   .box-header {
     gap: 12px;
+    padding-right: 100px; /* 为右上角作者信息留出空间 */
   }
   
   .icon-container {

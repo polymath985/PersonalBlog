@@ -236,22 +236,69 @@
                 <path d="M8 4a.75.75 0 0 1 .75.75V8.5h3.75a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 7.25 9V4.75A.75.75 0 0 1 8 4Z" fill="currentColor"/>
                 <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" fill="currentColor"/>
               </svg>
-              热门文章
+              {{ sectionTitle }}
             </h2>
+            
+            <!-- 排序选择器 -->
+            <CustomSelect 
+              v-model="sortBy"
+              :options="sortOptions"
+            />
           </div>
           
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+          <div class="blog-list">
+            <div v-for="blog in popularBlogs" :key="blog.id" class="blog-item" @click="goToBlog(blog.id)">
+              <div class="blog-header">
+                <h3 class="blog-title">{{ blog.title }}</h3>
+                <span class="blog-date">{{ formatDate(blog.publishedAt) }}</span>
+              </div>
+              <p class="blog-excerpt">{{ blog.excerpt }}</p>
+              <div class="blog-meta">
+                <span class="meta-item">
+                  <svg width="14" height="14" viewBox="0 0 16 16">
+                    <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/>
+                    <path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 0 1 0 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.69 1.679 8.068a.119.119 0 0 1 0-.136Z" fill="currentColor"/>
+                  </svg>
+                  {{ formatNumber(blog.views) }}
+                </span>
+                <span class="meta-item">
+                  <svg width="14" height="14" viewBox="0 0 16 16">
+                    <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Z" fill="currentColor"/>
+                  </svg>
+                  {{ blog.commentCount }}
+                </span>
+                <div class="blog-tags">
+                  <span v-for="tag in blog.tags.split(',').slice(0, 2)" :key="tag" class="blog-tag">
+                    {{ tag.trim() }}
+                  </span>
+                </div>
+              </div>
+            </div>
+=======
+>>>>>>> dev
           <!-- 使用 ContentPage 组件展示热门文章 -->
           <ContentPage
             v-if="popularBlogItems.length > 0"
             :items="popularBlogItems"
             :items-per-row="1"
             :items-per-page="3"
+<<<<<<< HEAD
+=======
+            :sort-by="sortBy"
+>>>>>>> dev
             @item-click="goToBlog"
           />
           
           <!-- 空状态 -->
           <div v-else class="empty-blogs">
             <p>暂无文章</p>
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> dev
           </div>
         </section>
       </main>
@@ -458,7 +505,15 @@ import { useRouter, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import ImageUpload from '@/components/ImageUpload.vue'
+<<<<<<< HEAD
 import ContentPage from '@/components/ContentPage.vue'
+=======
+<<<<<<< Updated upstream
+=======
+import ContentPage from '@/components/ContentPage.vue'
+import CustomSelect from '@/components/CustomSelect.vue'
+>>>>>>> Stashed changes
+>>>>>>> dev
 
 const router = useRouter()
 const route = useRoute()
@@ -481,6 +536,11 @@ const uploading = ref(false)
 const selectedAvatarFile = ref<File | null>(null)
 const selectedAvatarBlobUrl = ref('')
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> dev
 // 编辑资料相关
 const showEditProfileModal = ref(false)
 const editForm = ref({
@@ -494,6 +554,45 @@ const editForm = ref({
 })
 const saving = ref(false)
 
+<<<<<<< HEAD
+=======
+// 排序方式
+const sortBy = ref<'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'>('time-desc')
+
+// 排序选项
+const sortOptions = [
+  { label: '最新发布', value: 'time-desc' },
+  { label: '最多浏览', value: 'views-desc' },
+  { label: '最多点赞', value: 'likes-desc' },
+  { label: '最多评论', value: 'comments-desc' }
+]
+
+// 根据排序方式动态生成标题
+const sectionTitle = computed(() => {
+  switch (sortBy.value) {
+    case 'time-desc':
+      return '最新文章'
+    case 'time-asc':
+      return '最早文章'
+    case 'views-desc':
+      return '最多浏览'
+    case 'views-asc':
+      return '最少浏览'
+    case 'likes-desc':
+      return '最多点赞'
+    case 'likes-asc':
+      return '最少点赞'
+    case 'comments-desc':
+      return '最多评论'
+    case 'comments-asc':
+      return '最少评论'
+    default:
+      return '热门文章'
+  }
+})
+
+>>>>>>> Stashed changes
+>>>>>>> dev
 // 用户资料
 const userProfile = ref({
   id: '',
@@ -583,6 +682,11 @@ const generateContributions = () => {
 // 热门文章
 const popularBlogs = ref<any[]>([])
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> dev
 // 转换为 ContentPage 需要的格式
 const popularBlogItems = computed(() => {
   return popularBlogs.value.map(blog => ({
@@ -596,10 +700,23 @@ const popularBlogItems = computed(() => {
       likes: blog.likes,
       comments: blog.commentsCount
     },
+<<<<<<< HEAD
     updateTime: formatDate(blog.createdAt)
   }))
 })
 
+=======
+    updateTime: blog.createdAt, // 保留原始日期字符串用于排序
+    author: blog.authorId ? {
+      id: blog.authorId,
+      name: blog.authorName || '未知作者',
+      avatar: blog.authorAvatar
+    } : undefined
+  }))
+})
+
+>>>>>>> Stashed changes
+>>>>>>> dev
 // 格式化数字
 const formatNumber = (num: number): string => {
   if (num >= 10000) {
@@ -1232,6 +1349,8 @@ onMounted(() => {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #30363d;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .section-title {

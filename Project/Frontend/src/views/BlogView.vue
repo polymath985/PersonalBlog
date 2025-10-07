@@ -4,17 +4,20 @@
     <header class="blog-header">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="page-title">
-            <span class="gradient-text">技术博客</span>
-          </h1>
-          <p class="page-subtitle">分享技术见解，记录成长轨迹</p>
         </div>
-        <button @click="createBlog" class="create-blog-button">
-          <svg width="16" height="16" viewBox="0 0 16 16">
-            <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z" fill="currentColor"/>
-          </svg>
-          创作文章
-        </button>
+        <div class="header-actions">
+          <!-- 排序选择器 -->
+          <CustomSelect 
+            v-model="sortBy"
+            :options="sortOptions"
+          />
+          <button @click="createBlog" class="create-blog-button">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z" fill="currentColor"/>
+            </svg>
+            创作文章
+          </button>
+        </div>
       </div>
       
       <!-- 搜索和筛选 -->
@@ -94,6 +97,11 @@
         <h3>暂无文章</h3>
         <p>{{ searchQuery || selectedTag !== 'All' ? '没有找到符合条件的文章' : '还没有发布任何文章' }}</p>
       </div>
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> dev
 
       <!-- 使用 ContentPage 组件展示文章 -->
       <ContentPage
@@ -101,18 +109,37 @@
         :items="contentItems"
         :items-per-row="3"
         :items-per-page="9"
+<<<<<<< HEAD
         @item-click="handleItemClick"
       />
+=======
+        :sort-by="sortBy"
+        @item-click="handleItemClick"
+      />
+>>>>>>> Stashed changes
+>>>>>>> dev
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+<<<<<<< Updated upstream
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+<<<<<<< HEAD
 import ContentPage from '@/components/ContentPage.vue'
+=======
+import ContentBox from '@/components/ContentBox.vue'
+=======
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import ContentPage from '@/components/ContentPage.vue'
+import CustomSelect from '@/components/CustomSelect.vue'
+>>>>>>> Stashed changes
+>>>>>>> dev
 
 const router = useRouter()
+const route = useRoute()
 
 interface Props {
   userId?: string | null
@@ -128,6 +155,16 @@ const searchQuery = ref('')
 const selectedTag = ref('All')
 const allTags = ref(['All'])
 const totalViews = ref(0)
+const sortBy = ref<'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'>('time-desc')
+
+// 排序选项
+const sortOptions = [
+  { label: '最新发布', value: 'time-desc' },
+  { label: '最早发布', value: 'time-asc' },
+  { label: '最多浏览', value: 'views-desc' },
+  { label: '最多点赞', value: 'likes-desc' },
+  { label: '最多评论', value: 'comments-desc' }
+]
 
 // 加载博客列表
 const loadBlogs = async (userId: string | null) => {
@@ -185,18 +222,27 @@ const filteredBlogs = computed(() => {
     })
   }
 
-  // 按搜索关键词筛选
+  // 按搜索关键词筛选 (搜索标题、内容、作者名)
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(blog =>
-      blog.title.toLowerCase().includes(query) ||
-      blog.content.toLowerCase().includes(query)
-    )
+    filtered = filtered.filter(blog => {
+      const titleMatch = blog.title.toLowerCase().includes(query)
+      const contentMatch = blog.content.toLowerCase().includes(query)
+      const authorMatch = blog.authorName && blog.authorName.toLowerCase().includes(query)
+      const tagsMatch = blog.tags && blog.tags.toLowerCase().includes(query)
+      
+      return titleMatch || contentMatch || authorMatch || tagsMatch
+    })
   }
 
   return filtered
 })
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> dev
 // 转换为 ContentPage 需要的格式
 const contentItems = computed(() => {
   return filteredBlogs.value.map(blog => ({
@@ -210,10 +256,23 @@ const contentItems = computed(() => {
       likes: blog.likes || 0,
       comments: blog.commentsCount || 0
     },
+<<<<<<< HEAD
     updateTime: formatDate(blog.updatedAt || blog.createdAt)
   }))
 })
 
+=======
+    updateTime: blog.updatedAt || blog.createdAt, // 保留原始日期字符串用于排序
+    author: blog.authorId ? {
+      id: blog.authorId,
+      name: blog.authorName || '未知作者',
+      avatar: blog.authorAvatar
+    } : undefined
+  }))
+})
+
+>>>>>>> Stashed changes
+>>>>>>> dev
 // 解析标签
 const parseTags = (tags: string): string[] => {
   if (!tags) return []
@@ -273,9 +332,47 @@ const createBlog = () => {
   router.push('/blog/create')
 }
 
+// 从 URL 查询参数初始化搜索条件
+const initializeFromQuery = () => {
+  const query = route.query.search as string
+  const tag = route.query.tag as string
+  
+  if (query) {
+    searchQuery.value = query
+  }
+  
+  if (tag) {
+    // 等待 allTags 加载后再设置选中的标签
+    setTimeout(() => {
+      if (allTags.value.includes(tag)) {
+        selectedTag.value = tag
+      }
+    }, 500)
+  }
+}
+
+// 监听路由查询参数变化
+watch(() => route.query, (newQuery) => {
+  if (newQuery.search) {
+    searchQuery.value = newQuery.search as string
+  } else if (searchQuery.value && !newQuery.search) {
+    searchQuery.value = ''
+  }
+  
+  if (newQuery.tag) {
+    const tag = newQuery.tag as string
+    if (allTags.value.includes(tag)) {
+      selectedTag.value = tag
+    }
+  } else if (!newQuery.tag && selectedTag.value !== 'All') {
+    selectedTag.value = 'All'
+  }
+})
+
 // 组件挂载时加载数据
 onMounted(() => {
   loadBlogs(props.userId || null)
+  initializeFromQuery()
 })
 </script>
 
@@ -303,6 +400,12 @@ onMounted(() => {
 .header-left {
   flex: 1;
   text-align: center;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .page-title {
