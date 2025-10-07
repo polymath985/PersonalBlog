@@ -13,7 +13,7 @@
       </svg>
       <h2>{{ error }}</h2>
       <button @click="loadBlog" class="retry-button">重试</button>
-      <button @click="goBack" class="back-button">返回列表</button>
+      <button @click="goBack" class="back-button">返回</button>
     </div>
 
     <!-- 文章内容 -->
@@ -23,7 +23,7 @@
         <svg width="16" height="16" viewBox="0 0 16 16">
           <path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z" fill="currentColor"/>
         </svg>
-        返回列表
+        返回
       </button>
 
       <!-- 文章头部 -->
@@ -32,18 +32,29 @@
         <div class="title-container">
           <h1 class="article-title">{{ blog.title }}</h1>
           
-          <!-- 编辑按钮（仅作者可见） -->
-          <button 
-            v-if="isAuthor" 
-            class="edit-blog-button"
-            @click="editBlog"
-            title="编辑文章"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16">
-              <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z" fill="currentColor"/>
-            </svg>
-            <span>编辑</span>
-          </button>
+          <!-- 编辑和删除按钮（仅作者可见） -->
+          <div v-if="isAuthor" class="author-actions">
+            <button 
+              class="edit-blog-button"
+              @click="editBlog"
+              title="编辑文章"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z" fill="currentColor"/>
+              </svg>
+              <span>编辑</span>
+            </button>
+            <button 
+              class="delete-blog-button"
+              @click="deleteBlog"
+              title="删除文章"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75ZM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15ZM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25Z" fill="currentColor"/>
+              </svg>
+              <span>删除</span>
+            </button>
+          </div>
         </div>
         
         <div class="article-meta">
@@ -526,9 +537,14 @@ const shareArticle = async () => {
   }
 }
 
-// 返回列表
+// 返回上一页
 const goBack = () => {
-  router.push('/blogs')
+  // 如果有历史记录，返回上一页；否则返回博客列表
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/blogs')
+  }
 }
 
 // 编辑博客
@@ -549,6 +565,34 @@ const editBlog = () => {
   
   // 跳转到创建/编辑页面
   router.push('/blog/create')
+}
+
+// 删除博客
+const deleteBlog = async () => {
+  if (!blog.value) return
+  
+  const confirmed = confirm('确定要删除这篇文章吗？此操作无法撤销！')
+  if (!confirmed) return
+  
+  try {
+    const response = await fetch(`/api/Blog/${blog.value.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(errorText || '删除失败')
+    }
+    
+    alert('文章已删除')
+    router.push('/blogs')
+  } catch (err) {
+    console.error('删除博客失败:', err)
+    alert(`删除失败: ${err instanceof Error ? err.message : '未知错误'}`)
+  }
 }
 
 // 跳转到作者个人资料页面
@@ -847,13 +891,20 @@ const handleCancelReply = () => {
   letter-spacing: -0.02em;
 }
 
-.edit-blog-button {
+.author-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.edit-blog-button,
+.delete-blog-button {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: #238636;
   border: none;
   border-radius: 6px;
   color: #ffffff;
@@ -863,13 +914,28 @@ const handleCancelReply = () => {
   transition: all 0.3s ease;
 }
 
+.edit-blog-button {
+  background: #238636;
+}
+
 .edit-blog-button:hover {
   background: #2ea043;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(35, 134, 54, 0.3);
 }
 
-.edit-blog-button svg {
+.delete-blog-button {
+  background: #da3633;
+}
+
+.delete-blog-button:hover {
+  background: #f85149;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(218, 54, 51, 0.3);
+}
+
+.edit-blog-button svg,
+.delete-blog-button svg {
   flex-shrink: 0;
 }
 

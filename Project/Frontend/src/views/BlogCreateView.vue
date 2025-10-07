@@ -15,6 +15,18 @@
 
       <div class="header-actions">
         <button 
+          v-if="editingBlogId"
+          @click="deleteBlog" 
+          class="action-button danger-button"
+          :disabled="saving"
+          title="删除文章"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16">
+            <path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75ZM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15ZM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25Z" fill="currentColor"/>
+          </svg>
+          删除
+        </button>
+        <button 
           @click="saveDraft" 
           class="action-button secondary-button"
           :disabled="saving"
@@ -786,13 +798,51 @@ const publishBlog = async () => {
   }
 }
 
-// 返回
+// 返回上一页
 const goBack = () => {
   if (form.value.title || form.value.content || form.value.tags.length > 0) {
     const confirmed = confirm('有未保存的内容,确定要离开吗?')
     if (!confirmed) return
   }
-  router.push('/blogs')
+  
+  // 如果有历史记录，返回上一页；否则返回博客列表
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/blogs')
+  }
+}
+
+// 删除博客
+const deleteBlog = async () => {
+  if (!editingBlogId.value) return
+  
+  const confirmed = confirm('确定要删除这篇文章吗？此操作无法撤销！')
+  if (!confirmed) return
+  
+  try {
+    saving.value = true
+    
+    const response = await fetch(`/api/Blog/${editingBlogId.value}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(errorText || '删除失败')
+    }
+    
+    alert('文章已删除')
+    router.push('/blogs')
+  } catch (err) {
+    console.error('删除博客失败:', err)
+    alert(`删除失败: ${err instanceof Error ? err.message : '未知错误'}`)
+  } finally {
+    saving.value = false
+  }
 }
 
 // 组件挂载
@@ -947,6 +997,18 @@ const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 .primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(35, 134, 54, 0.4);
+}
+
+.danger-button {
+  background: linear-gradient(135deg, #da3633 0%, #f85149 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(218, 54, 51, 0.3);
+}
+
+.danger-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(218, 54, 51, 0.4);
+  background: linear-gradient(135deg, #f85149 0%, #ff6b6b 100%);
 }
 
 /* 编辑容器 */

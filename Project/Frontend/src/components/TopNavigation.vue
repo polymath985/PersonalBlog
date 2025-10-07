@@ -26,11 +26,105 @@
           </svg>
           <input 
             type="text" 
-            placeholder="搜索文章..." 
+            placeholder="搜索文章、@用户、#标签..." 
             class="search-input"
             v-model="searchQuery"
+            @input="handleSearchInput"
             @keyup.enter="handleSearch"
+            @keydown.down.prevent="navigateSuggestions(1)"
+            @keydown.up.prevent="navigateSuggestions(-1)"
+            @blur="handleSearchBlur"
+            @focus="handleSearchFocus"
+            title="提示: 搜索用户使用 @用户名, 搜索标签使用 #标签名"
           />
+          
+          <!-- 搜索建议下拉列表 -->
+          <div v-if="showSuggestions && searchSuggestions.length > 0" class="search-suggestions">
+            <!-- 用户建议 -->
+            <template v-if="currentSearchType === 'user'">
+              <div class="suggestions-header">
+                <svg width="12" height="12" viewBox="0 0 16 16">
+                  <path fill="currentColor" d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0zM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0z"/>
+                </svg>
+                <span>用户建议</span>
+              </div>
+              <div 
+                v-for="(user, index) in searchSuggestions" 
+                :key="user.id"
+                :class="['suggestion-item', { active: selectedSuggestionIndex === index }]"
+                @mousedown.prevent="selectUser(user)"
+                @mouseenter="selectedSuggestionIndex = index"
+              >
+                <img 
+                  :src="user.avatar || '/default-avatar.png'" 
+                  :alt="user.name"
+                  class="suggestion-avatar"
+                />
+                <div class="suggestion-info">
+                  <div class="suggestion-name">{{ user.name }}</div>
+                  <div v-if="user.bio" class="suggestion-bio">{{ user.bio }}</div>
+                </div>
+              </div>
+            </template>
+
+            <!-- 标签建议 -->
+            <template v-else-if="currentSearchType === 'tag'">
+              <div class="suggestions-header">
+                <svg width="12" height="12" viewBox="0 0 16 16">
+                  <path fill="currentColor" d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/>
+                </svg>
+                <span>标签建议</span>
+              </div>
+              <div 
+                v-for="(tag, index) in searchSuggestions" 
+                :key="tag"
+                :class="['suggestion-item', 'tag-item', { active: selectedSuggestionIndex === index }]"
+                @mousedown.prevent="selectTag(tag)"
+                @mouseenter="selectedSuggestionIndex = index"
+              >
+                <div class="tag-icon">#</div>
+                <div class="suggestion-info">
+                  <div class="suggestion-name">{{ tag }}</div>
+                </div>
+              </div>
+            </template>
+
+            <!-- 博客建议 -->
+            <template v-else-if="currentSearchType === 'blog'">
+              <div class="suggestions-header">
+                <svg width="12" height="12" viewBox="0 0 16 16">
+                  <path fill="currentColor" d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75V1.75Z"/>
+                </svg>
+                <span>文章建议</span>
+              </div>
+              <div 
+                v-for="(blog, index) in searchSuggestions" 
+                :key="blog.id"
+                :class="['suggestion-item', { active: selectedSuggestionIndex === index }]"
+                @mousedown.prevent="selectBlog(blog)"
+                @mouseenter="selectedSuggestionIndex = index"
+              >
+                <svg class="blog-icon" width="20" height="20" viewBox="0 0 16 16">
+                  <path fill="currentColor" d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75V1.75Z"/>
+                </svg>
+                <div class="suggestion-info">
+                  <div class="suggestion-name">{{ blog.title }}</div>
+                  <div class="suggestion-meta">
+                    <span class="author">{{ blog.authorName }}</span>
+                    <span class="views">👁️ {{ blog.views }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+          
+          <!-- 无结果提示 -->
+          <div v-if="showSuggestions && searchSuggestions.length === 0 && searchQuery.trim()" class="search-no-results">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path fill="currentColor" d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
+            </svg>
+            <span>{{ getNoResultsMessage() }}</span>
+          </div>
         </div>
       </div>
 
@@ -42,7 +136,7 @@
           </svg>
         </a>
         
-        <a href="/create" class="nav-icon" title="创建">
+        <a href="/blog/create" class="nav-icon" title="创建">
           <svg width="16" height="16" viewBox="0 0 16 16">
             <path fill="currentColor" d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2z"/>
           </svg>
@@ -82,18 +176,309 @@ import router from '@/router'
 // 响应式数据
 const searchQuery = ref('')
 const showUserMenu = ref(false)
+const showSuggestions = ref(false)
+const searchSuggestions = ref<any[]>([])
+const selectedSuggestionIndex = ref(-1)
+const searchTimeout = ref<number | null>(null)
+const currentSearchType = ref<'user' | 'tag' | 'blog' | null>(null)
 
 //获取localStorage中的用户信息
 const userName = localStorage.getItem('userName') || '用户名'
 const userEmail = localStorage.getItem('userEmail') || '用户邮箱'
 
+// 处理搜索输入变化
+const handleSearchInput = () => {
+  const query = searchQuery.value.trim()
+  
+  // 清除之前的定时器
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+  }
+  
+  if (query.length === 0) {
+    // 输入为空,隐藏建议
+    showSuggestions.value = false
+    searchSuggestions.value = []
+    currentSearchType.value = null
+    return
+  }
+  
+  // 根据输入判断搜索类型
+  if (query.startsWith('@')) {
+    // 用户搜索
+    const username = query.substring(1).trim()
+    currentSearchType.value = 'user'
+    
+    if (username.length > 0) {
+      searchTimeout.value = window.setTimeout(() => {
+        fetchUserSuggestions(username)
+      }, 300)
+    } else {
+      searchSuggestions.value = []
+      showSuggestions.value = true
+    }
+  } else if (query.startsWith('#')) {
+    // 标签搜索
+    const tag = query.substring(1).trim()
+    currentSearchType.value = 'tag'
+    
+    if (tag.length > 0) {
+      searchTimeout.value = window.setTimeout(() => {
+        fetchTagSuggestions(tag)
+      }, 300)
+    } else {
+      searchSuggestions.value = []
+      showSuggestions.value = true
+    }
+  } else {
+    // 博客搜索
+    currentSearchType.value = 'blog'
+    
+    searchTimeout.value = window.setTimeout(() => {
+      fetchBlogSuggestions(query)
+    }, 300)
+  }
+}
+
+// 获取用户搜索建议
+const fetchUserSuggestions = async (username: string) => {
+  try {
+    const response = await fetch(`/api/UserData/search?name=${encodeURIComponent(username)}&limit=5`)
+    
+    if (response.ok) {
+      const users = await response.json()
+      searchSuggestions.value = users
+      showSuggestions.value = true
+      selectedSuggestionIndex.value = -1
+    } else {
+      searchSuggestions.value = []
+      showSuggestions.value = true
+    }
+  } catch (error) {
+    console.error('获取用户建议失败:', error)
+    searchSuggestions.value = []
+    showSuggestions.value = false
+  }
+}
+
+// 获取博客搜索建议
+const fetchBlogSuggestions = async (query: string) => {
+  try {
+    const response = await fetch(`/api/Blog/search/suggestions?query=${encodeURIComponent(query)}&limit=5`)
+    
+    if (response.ok) {
+      const blogs = await response.json()
+      searchSuggestions.value = blogs
+      showSuggestions.value = true
+      selectedSuggestionIndex.value = -1
+    } else {
+      searchSuggestions.value = []
+      showSuggestions.value = true
+    }
+  } catch (error) {
+    console.error('获取博客建议失败:', error)
+    searchSuggestions.value = []
+    showSuggestions.value = false
+  }
+}
+
+// 获取标签搜索建议
+const fetchTagSuggestions = async (tag: string) => {
+  try {
+    const response = await fetch(`/api/Blog/tags/suggestions?query=${encodeURIComponent(tag)}&limit=5`)
+    
+    if (response.ok) {
+      const tags = await response.json()
+      searchSuggestions.value = tags
+      showSuggestions.value = true
+      selectedSuggestionIndex.value = -1
+    } else {
+      searchSuggestions.value = []
+      showSuggestions.value = true
+    }
+  } catch (error) {
+    console.error('获取标签建议失败:', error)
+    searchSuggestions.value = []
+    showSuggestions.value = false
+  }
+}
+
+// 键盘导航搜索建议
+const navigateSuggestions = (direction: number) => {
+  if (searchSuggestions.value.length === 0) return
+  
+  selectedSuggestionIndex.value += direction
+  
+  // 循环导航
+  if (selectedSuggestionIndex.value < 0) {
+    selectedSuggestionIndex.value = searchSuggestions.value.length - 1
+  } else if (selectedSuggestionIndex.value >= searchSuggestions.value.length) {
+    selectedSuggestionIndex.value = 0
+  }
+}
+
+// 选择用户
+const selectUser = (user: any) => {
+  router.push(`/profile/${user.id}`)
+  searchQuery.value = ''
+  showSuggestions.value = false
+  searchSuggestions.value = []
+  selectedSuggestionIndex.value = -1
+  currentSearchType.value = null
+}
+
+// 选择博客
+const selectBlog = (blog: any) => {
+  router.push(`/blog/${blog.id}`)
+  searchQuery.value = ''
+  showSuggestions.value = false
+  searchSuggestions.value = []
+  selectedSuggestionIndex.value = -1
+  currentSearchType.value = null
+}
+
+// 选择标签
+const selectTag = (tag: string) => {
+  router.push(`/blogs?tag=${encodeURIComponent(tag)}`)
+  searchQuery.value = ''
+  showSuggestions.value = false
+  searchSuggestions.value = []
+  selectedSuggestionIndex.value = -1
+  currentSearchType.value = null
+}
+
+// 获取无结果提示消息
+const getNoResultsMessage = () => {
+  if (currentSearchType.value === 'user') {
+    return '未找到匹配的用户'
+  } else if (currentSearchType.value === 'tag') {
+    return '未找到匹配的标签'
+  } else if (currentSearchType.value === 'blog') {
+    return '未找到匹配的文章'
+  }
+  return '未找到结果'
+}
+
+// 搜索框失去焦点
+const handleSearchBlur = () => {
+  // 延迟隐藏,以便点击建议项能够触发
+  setTimeout(() => {
+    showSuggestions.value = false
+  }, 200)
+}
+
+// 搜索框获得焦点
+const handleSearchFocus = () => {
+  const query = searchQuery.value.trim()
+  // 如果已有搜索内容,重新显示建议
+  if (query.length > 0 && searchSuggestions.value.length > 0) {
+    showSuggestions.value = true
+  }
+}
+
 // 搜索功能
-const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    // 这里可以实现搜索逻辑，比如路由跳转或API调用
-    console.log('搜索:', searchQuery.value)
-    // 示例：跳转到搜索结果页
-    // router.push(`/search?q=${encodeURIComponent(searchQuery.value)}`)
+const handleSearch = async () => {
+  const query = searchQuery.value.trim()
+  if (!query) return
+
+  // 如果正在显示建议列表且有选中项,根据类型选择对应的项
+  if (showSuggestions.value && selectedSuggestionIndex.value >= 0 && searchSuggestions.value.length > 0) {
+    const selectedItem = searchSuggestions.value[selectedSuggestionIndex.value]
+    
+    if (currentSearchType.value === 'user') {
+      selectUser(selectedItem)
+    } else if (currentSearchType.value === 'blog') {
+      selectBlog(selectedItem)
+    } else if (currentSearchType.value === 'tag') {
+      selectTag(selectedItem)
+    }
+    return
+  }
+
+  // 隐藏建议列表
+  showSuggestions.value = false
+
+  // 根据搜索内容判断搜索类型
+  const searchType = detectSearchType(query)
+  
+  if (searchType === 'user') {
+    // 搜索用户 (格式: @username 或 user:username)
+    const username = query.replace(/^(@|user:)/i, '').trim()
+    await searchUser(username)
+  } else if (searchType === 'tag') {
+    // 搜索标签 (格式: #tag 或 tag:tagname)
+    const tag = query.replace(/^(#|tag:)/i, '').trim()
+    router.push({
+      path: '/blogs',
+      query: { tag: tag }
+    })
+    searchQuery.value = '' // 清空搜索框
+  } else {
+    // 默认搜索博客标题和内容
+    router.push({
+      path: '/blogs',
+      query: { search: query }
+    })
+    searchQuery.value = '' // 清空搜索框
+  }
+}
+
+// 检测搜索类型
+const detectSearchType = (query: string): 'user' | 'tag' | 'blog' => {
+  if (query.startsWith('@') || query.toLowerCase().startsWith('user:')) {
+    return 'user'
+  }
+  if (query.startsWith('#') || query.toLowerCase().startsWith('tag:')) {
+    return 'tag'
+  }
+  return 'blog'
+}
+
+// 搜索用户并跳转到用户主页
+const searchUser = async (username: string) => {
+  try {
+    // 调用后端API搜索用户
+    const response = await fetch(`/api/UserData/search?name=${encodeURIComponent(username)}`)
+    
+    if (response.ok) {
+      const users = await response.json()
+      
+      if (users && users.length > 0) {
+        // 如果只找到一个用户,直接跳转到该用户的主页
+        if (users.length === 1) {
+          router.push(`/profile/${users[0].id}`)
+        } else {
+          // 如果找到多个用户,跳转到第一个,但也可以在博客页面按作者名筛选
+          router.push(`/profile/${users[0].id}`)
+        }
+        searchQuery.value = '' // 清空搜索框
+      } else {
+        // 如果没找到用户，跳转到博客页面并搜索该用户名
+        // 这样可以搜索到包含该用户名的博客标题或内容
+        console.log(`未找到用户 "${username}",在博客中搜索...`)
+        router.push({
+          path: '/blogs',
+          query: { search: username }
+        })
+        searchQuery.value = ''
+      }
+    } else {
+      // API调用失败，回退到博客搜索
+      console.error('搜索用户API失败')
+      router.push({
+        path: '/blogs',
+        query: { search: username }
+      })
+      searchQuery.value = ''
+    }
+  } catch (error) {
+    console.error('搜索用户失败:', error)
+    // 出错时回退到博客搜索
+    router.push({
+      path: '/blogs',
+      query: { search: username }
+    })
+    searchQuery.value = ''
   }
 }
 
@@ -194,6 +579,8 @@ onUnmounted(() => {
 .search-container {
   position: relative;
   width: 100%;
+  /* 确保容器不会因为绝对定位的子元素而改变大小 */
+  min-height: 40px;
 }
 
 .search-icon {
@@ -225,6 +612,177 @@ onUnmounted(() => {
   border-color: #1f6feb;
   box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
   background-color: #0d1117;
+}
+
+/* 搜索建议下拉列表 */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-height: 320px;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.suggestions-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #7d8590;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.suggestions-header svg {
+  opacity: 0.7;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #30363d;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background-color: #30363d;
+}
+
+.suggestion-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #30363d;
+  flex-shrink: 0;
+}
+
+.suggestion-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestion-name {
+  color: #f0f6fc;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-bio {
+  color: #7d8590;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 标签建议样式 */
+.suggestion-item.tag-item {
+  gap: 8px;
+}
+
+.tag-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* 博客建议样式 */
+.blog-icon {
+  flex-shrink: 0;
+  color: #58a6ff;
+  opacity: 0.8;
+}
+
+.suggestion-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #7d8590;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.suggestion-meta .author {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.suggestion-meta .author::before {
+  content: '👤';
+  font-size: 11px;
+}
+
+.suggestion-meta .views {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 无结果提示 */
+.search-no-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #7d8590;
+  font-size: 13px;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+}
+
+.search-no-results svg {
+  opacity: 0.5;
 }
 
 /* 右侧区域 */

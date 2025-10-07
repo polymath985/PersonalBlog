@@ -191,5 +191,32 @@ namespace Backend.Controllers
 
             return Ok(stats);
         }
+
+        // 搜索用户 - 根据名称模糊查询
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<object>>> SearchUsers([FromQuery] string name, [FromQuery] int limit = 10)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest("Search name cannot be empty.");
+            }
+
+            Console.WriteLine($"Searching users with name containing: {name}");
+
+            var users = await _dbContext.Users
+                .Where(u => u.Name.ToLower().Contains(name.ToLower()))
+                .Take(limit)
+                .Select(u => new
+                {
+                    id = u.Id,
+                    name = u.Name,
+                    avatar = u.Avatar,
+                    bio = u.Bio
+                })
+                .ToListAsync();
+
+            Console.WriteLine($"搜索用户 '{name}', 找到 {users.Count} 个结果");
+            return Ok(users);
+        }
     }
 }

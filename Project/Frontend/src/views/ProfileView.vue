@@ -236,10 +236,17 @@
                 <path d="M8 4a.75.75 0 0 1 .75.75V8.5h3.75a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 7.25 9V4.75A.75.75 0 0 1 8 4Z" fill="currentColor"/>
                 <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" fill="currentColor"/>
               </svg>
-              热门文章
+              {{ sectionTitle }}
             </h2>
+            
+            <!-- 排序选择器 -->
+            <CustomSelect 
+              v-model="sortBy"
+              :options="sortOptions"
+            />
           </div>
           
+<<<<<<< Updated upstream
           <div class="blog-list">
             <div v-for="blog in popularBlogs" :key="blog.id" class="blog-item" @click="goToBlog(blog.id)">
               <div class="blog-header">
@@ -268,6 +275,21 @@
                 </div>
               </div>
             </div>
+=======
+          <!-- 使用 ContentPage 组件展示热门文章 -->
+          <ContentPage
+            v-if="popularBlogItems.length > 0"
+            :items="popularBlogItems"
+            :items-per-row="1"
+            :items-per-page="3"
+            :sort-by="sortBy"
+            @item-click="goToBlog"
+          />
+          
+          <!-- 空状态 -->
+          <div v-else class="empty-blogs">
+            <p>暂无文章</p>
+>>>>>>> Stashed changes
           </div>
         </section>
       </main>
@@ -330,6 +352,11 @@ import { useRouter, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import ImageUpload from '@/components/ImageUpload.vue'
+<<<<<<< Updated upstream
+=======
+import ContentPage from '@/components/ContentPage.vue'
+import CustomSelect from '@/components/CustomSelect.vue'
+>>>>>>> Stashed changes
 
 const router = useRouter()
 const route = useRoute()
@@ -352,6 +379,57 @@ const uploading = ref(false)
 const selectedAvatarFile = ref<File | null>(null)
 const selectedAvatarBlobUrl = ref('')
 
+<<<<<<< Updated upstream
+=======
+// 编辑资料相关
+const showEditProfileModal = ref(false)
+const editForm = ref({
+  name: '',
+  bio: '',
+  introduction: '',
+  github: '',
+  twitter: '',
+  website: '',
+  skills: ''
+})
+const saving = ref(false)
+
+// 排序方式
+const sortBy = ref<'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'>('time-desc')
+
+// 排序选项
+const sortOptions = [
+  { label: '最新发布', value: 'time-desc' },
+  { label: '最多浏览', value: 'views-desc' },
+  { label: '最多点赞', value: 'likes-desc' },
+  { label: '最多评论', value: 'comments-desc' }
+]
+
+// 根据排序方式动态生成标题
+const sectionTitle = computed(() => {
+  switch (sortBy.value) {
+    case 'time-desc':
+      return '最新文章'
+    case 'time-asc':
+      return '最早文章'
+    case 'views-desc':
+      return '最多浏览'
+    case 'views-asc':
+      return '最少浏览'
+    case 'likes-desc':
+      return '最多点赞'
+    case 'likes-asc':
+      return '最少点赞'
+    case 'comments-desc':
+      return '最多评论'
+    case 'comments-asc':
+      return '最少评论'
+    default:
+      return '热门文章'
+  }
+})
+
+>>>>>>> Stashed changes
 // 用户资料
 const userProfile = ref({
   id: '',
@@ -441,6 +519,31 @@ const generateContributions = () => {
 // 热门文章
 const popularBlogs = ref<any[]>([])
 
+<<<<<<< Updated upstream
+=======
+// 转换为 ContentPage 需要的格式
+const popularBlogItems = computed(() => {
+  return popularBlogs.value.map(blog => ({
+    id: blog.id,
+    title: blog.title,
+    description: blog.content.substring(0, 120) + '...',
+    icon: 'book',
+    tags: blog.tags ? blog.tags.split(',').slice(0, 3).map((t: string) => t.trim()) : [],
+    stats: {
+      views: blog.views,
+      likes: blog.likes,
+      comments: blog.commentsCount
+    },
+    updateTime: blog.createdAt, // 保留原始日期字符串用于排序
+    author: blog.authorId ? {
+      id: blog.authorId,
+      name: blog.authorName || '未知作者',
+      avatar: blog.authorAvatar
+    } : undefined
+  }))
+})
+
+>>>>>>> Stashed changes
 // 格式化数字
 const formatNumber = (num: number): string => {
   if (num >= 10000) {
@@ -1017,6 +1120,8 @@ onMounted(() => {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #30363d;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .section-title {

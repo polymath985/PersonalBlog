@@ -39,6 +39,7 @@
 
     <!-- 主要内容区域 -->
     <main class="main-content">
+<<<<<<< Updated upstream
       <!-- 内容卡片网格 -->
       <section class="content-grid">
         <ContentBox
@@ -56,6 +57,41 @@
           @click="handleContentClick"
         />
       </section>
+=======
+      <!-- 排序选择器 -->
+      <div v-if="!loading && !error" class="content-header">
+        <h2 class="section-title">{{ sectionTitle }}</h2>
+        <CustomSelect 
+          v-model="sortBy"
+          :options="sortOptions"
+        />
+      </div>
+      
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
+
+      <!-- 错误提示 -->
+      <div v-else-if="error" class="error-container">
+        <svg width="48" height="48" viewBox="0 0 16 16">
+          <path d="M2.343 13.657A8 8 0 1 1 13.657 2.343 8 8 0 0 1 2.343 13.657ZM6.03 4.97a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L6.94 8 4.97 9.97a.749.749 0 0 0 .326 1.275.749.749 0 0 0 .734-.215L8 9.06l2.03 2.03a.751.751 0 0 0 1.042-.018.751.751 0 0 0 .018-1.042L9.06 8l2.03-2.03a.749.749 0 0 0-.326-1.275.749.749 0 0 0-.734.215L8 6.94Z" fill="currentColor"/>
+        </svg>
+        <p>{{ error }}</p>
+        <button @click="loadBlogs" class="retry-btn">重试</button>
+      </div>
+
+      <!-- 内容卡片网格 -->
+      <ContentPage
+        v-else
+        :items="contentItems"
+        :items-per-row="1"
+        :items-per-page="5"
+        :sort-by="sortBy"
+        @item-click="handleItemClick"
+      />
+>>>>>>> Stashed changes
 
       <!-- 快速操作区域 -->
       <section class="quick-actions">
@@ -82,9 +118,16 @@
 </template>
 
 <script setup lang="ts">
+<<<<<<< Updated upstream
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ContentBox from '@/components/ContentBox.vue'
+=======
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import ContentPage from '@/components/ContentPage.vue'
+import CustomSelect from '@/components/CustomSelect.vue'
+>>>>>>> Stashed changes
 
 const router = useRouter()
 
@@ -93,8 +136,61 @@ const totalPosts = ref(42)
 const totalProjects = ref(15)
 const totalViews = ref(12800)
 
+<<<<<<< Updated upstream
 const WhenLogIn = () => {
   fetch("/Hot")
+=======
+// 博客数据
+const contentItems = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
+const sortBy = ref<'time-desc' | 'time-asc' | 'views-desc' | 'views-asc' | 'likes-desc' | 'likes-asc' | 'comments-desc' | 'comments-asc' | 'none'>('time-desc')
+
+// 排序选项
+const sortOptions = [
+  { label: '最新发布', value: 'time-desc' },
+  { label: '最多浏览', value: 'views-desc' },
+  { label: '最多点赞', value: 'likes-desc' }
+]
+
+// 根据排序方式动态生成标题
+const sectionTitle = computed(() => {
+  switch (sortBy.value) {
+    case 'time-desc':
+      return '最新文章'
+    case 'time-asc':
+      return '最早文章'
+    case 'views-desc':
+      return '最多浏览'
+    case 'views-asc':
+      return '最少浏览'
+    case 'likes-desc':
+      return '最多点赞'
+    case 'likes-asc':
+      return '最少点赞'
+    case 'comments-desc':
+      return '最多评论'
+    case 'comments-asc':
+      return '最少评论'
+    default:
+      return '文章'
+  }
+})
+
+// 格式化日期
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  
+  if (days === 0) return '今天'
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days}天前`
+  if (days < 30) return `${Math.floor(days / 7)}周前`
+  if (days < 365) return `${Math.floor(days / 30)}个月前`
+  return `${Math.floor(days / 365)}年前`
+>>>>>>> Stashed changes
 }
 
 // 内容项目数据
@@ -165,7 +261,69 @@ const contentItems = ref([
     updateTime: "4天前",
     clickAction: () => router.push('/portfolio')
   }
+<<<<<<< Updated upstream
 ])
+=======
+  return num.toString()
+}
+
+// 加载博客数据
+const loadBlogs = async () => {
+  loading.value = true
+  error.value = ''
+  
+  try {
+    // 获取所有博客
+    const response = await fetch(`/api/Blog/all`)
+    
+    if (!response.ok) {
+      throw new Error('获取博客列表失败')
+    }
+    
+    const blogs = await response.json()
+    
+    // 按浏览量降序排序
+    const sortedBlogs = blogs.sort((a: any, b: any) => b.views - a.views)
+    
+    // 更新统计数据
+    totalPosts.value = sortedBlogs.length
+    totalViews.value = sortedBlogs.reduce((sum: number, blog: any) => sum + blog.views, 0)
+    
+    // 转换为 ContentPage 需要的格式 - 传入所有数据,让 ContentPage 自动处理分页
+    contentItems.value = sortedBlogs.map((blog: any, index: number) => ({
+      id: blog.id,
+      title: blog.title,
+      description: blog.content.substring(0, 120) + '...',
+      icon: 'book',
+      badge: index < 3 ? '热门' : undefined,
+      tags: blog.tags ? blog.tags.split(',').slice(0, 3).map((t: string) => t.trim()) : [],
+      featured: index < 2, // 前两个设置为 featured
+      stats: {
+        views: blog.views,
+        likes: blog.likes,
+        comments: blog.commentsCount
+      },
+      updateTime: blog.createdAt, // 保留原始日期字符串用于排序
+      author: blog.authorId ? {
+        id: blog.authorId,
+        name: blog.authorName || '未知作者',
+        avatar: blog.authorAvatar
+      } : undefined
+    }))
+    
+  } catch (err) {
+    console.error('加载博客失败:', err)
+    error.value = err instanceof Error ? err.message : '加载失败，请稍后重试'
+  } finally {
+    loading.value = false
+  }
+}
+
+// 处理项目点击
+const handleItemClick = (item: any) => {
+  router.push(`/blog/${item.id}`)
+}
+>>>>>>> Stashed changes
 
 // 快速操作数据
 const quickActions = ref([
@@ -401,12 +559,75 @@ const getActionIcon = (iconName: string): string => {
   padding: 4rem 2rem;
 }
 
+<<<<<<< Updated upstream
 /* 内容网格 */
 .content-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
   margin-bottom: 4rem;
+=======
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f0f6fc;
+  margin: 0;
+}
+
+/* 加载状态 */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #c9d1d9;
+  gap: 1.5rem;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #30363d;
+  border-top-color: #58a6ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-container svg {
+  color: #f85149;
+}
+
+.retry-btn {
+  padding: 0.75rem 1.5rem;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #30363d;
+  border-color: #58a6ff;
+  color: #58a6ff;
+>>>>>>> Stashed changes
 }
 
 /* 快速操作区域 */
